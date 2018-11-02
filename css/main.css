@@ -1,0 +1,242 @@
+a, h1, h2, h3, h4, h5, h6{
+	font-family: "Helvetica Neue", HelveticaNeue, "TeX Gyre Heros", TeXGyreHeros, FreeSans, "Nimbus Sans L", "Liberation Sans", Arimo, Helvetica, Arial, sans-serif; 
+}
+h2{
+	font-weight: bold;
+	margin-bottom: 5px;
+    font-size: 36px;
+}
+img{
+	width: 100%;
+}
+
+.end {
+	border-bottom: 5px solid #cc6600
+}
+.nav {
+	margin-top: 30px;
+}
+.logo img{
+	width: 30px;
+}
+.logo a{
+	display: block;
+}
+.nav ul{
+	text-align: right;
+    text-align: right;
+    margin-top: 5px;
+}
+.nav ul li{
+	display: inline-block;
+	padding-left: 40px;
+}
+.nav ul li a{
+	text-decoration: none;
+	color: #908b8b;
+	font-weight: bold;
+	font-size: 17px;
+	transition: .4s all;
+}
+.nav ul li a:hover{
+	color: black;
+}
+.hero {
+	margin-top: 150px;
+	margin-bottom: 150px;
+}
+.hero-profile img{
+	width: 90%;
+}
+.wrapper{
+	display: inline-block;
+	float: right;
+	border-bottom: 5px solid #cc6600
+}
+.hero-text{
+	padding-left: 15vmin;
+}
+.hero-text h1{
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.hero-text h3{
+	font-family: 'raleway';
+	font-size: 27px;
+	color: #737070;
+	margin-bottom: 35px;
+	font-weight: bold;
+}
+.hero-text a{
+	font-size: 20px;
+	text-decoration: none;
+	color: black;
+	font-weight: bold; 
+}
+.hero-text h3 a{
+	font-family: 'raleway';
+	color: white;
+	background: black;
+	transition: 1s all;
+	font-size: 27px;
+	font-weight: bold;
+	display: inline-block;
+	padding: 3px 10px;
+    margin-top: 5px;
+}
+.hero-text h3 a:hover{
+	color: black;
+	background: #cc6600;
+}
+.learn-btn{
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+.learn-btn:after{
+	content: '';
+    position: absolute;
+    left: -10%;
+    z-index: -1;
+    right: 0;
+    top: 30%;
+    margin: 10px auto;
+    width: 120%;
+    height: 13px;
+    background: #cc6600;
+    transition: 0.4s;
+}
+.learn-btn:hover:after{
+	content: '';
+    position: absolute;
+    left: -10%;
+    z-index: -1;
+    right: 0;
+    top: 60%;
+    margin: 10px auto;
+    width: 120%;
+    height: 5px;
+    background: #cc6600;
+}
+.social{
+	padding-top: 50px;
+	display: inline-block;
+    float: right;
+}
+.social img{
+	width: 20px;
+}
+.social a{
+	margin-left: 10px;
+}
+.contact-title h2, .talk-title h2, .about-title h2, .thoughts-title h2{
+	position: relative;
+    display: inline-block;
+	margin-bottom: 70px;
+    cursor: pointer;
+}
+.contact-title h2:after, .talk-title h2:after, .about-title h2:after, .thoughts-title h2:after{
+	content: '';
+    position: absolute;
+    left: 0%;
+    z-index: -1;
+    right: 0;
+    top: 90%;
+    margin: 10px auto;
+    width: 100%;
+    height: 23px;
+    background-size: cover;
+    transition: 0.4s;
+}
+.contact-title p, .talk-title p, .about-title p, .about-end p{
+	font-family: "georgia";
+	font-size: 24px;
+}
+.about-title p a{
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+.talk-content, .about-content, .thoughts-content{
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+.talk-bottom{
+    margin-bottom: 200px;
+}
+.talk-content{
+	width: 100%;
+    text-align: center;
+}
+.about-end{
+	margin-bottom: 100px;
+}
+
+a:link{
+	color: #cc6600
+}
+
+a.email span{
+	border-bottom: 5px solid #cc6600;
+    font-weight: bold;
+}
+a.email {
+	text-decoration: none;
+	color: black;
+}
+.thoughts-title{
+	margin-top: 150px;
+}
+.talk-content img{
+	height: 100px;
+	width: auto;
+	display: inline-block;
+}
+.talk-content .talk-title{
+	display: block;
+	margin-top: 15px;
+    font-family: "Helvetica Neue", HelveticaNeue, "TeX Gyre Heros", TeXGyreHeros, FreeSans, "Nimbus Sans L", "Liberation Sans", Arimo, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+.contact-title{
+	margin-top: 150px;
+	margin-bottom: 200px;
+    background: url(../images/map.png) no-repeat;
+    background-size: contain;
+    background-position-x: right;
+}
+
+.about-content .two.columns{
+	line-height: 4em;
+}
+@media (max-width: 550px) { 
+	.about-content .two.columns{
+		text-align: center;
+	}
+	.about-content img{
+		width: 50%;
+		margin-bottom: 30px; 
+	}	
+	.row.talk-content .three.columns{
+		margin-bottom: 30px;
+	}
+	.logo{
+		text-align: center;
+	}
+	.nav ul{
+		text-align: center;
+	}
+	.nav ul li{
+		padding-left: 20px;
+	}
+	.hero{
+		margin-top: 100px;
+	}
+	.hero-profile{
+		text-align: center;
+	}
+	.hero-text{
+		padding-left: 0px;
+	}
+}
