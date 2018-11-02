@@ -10,9 +10,6 @@ img{
 	width: 100%;
 }
 
-.end {
-	border-bottom: 5px solid #cc6600
-}
 .nav {
 	margin-top: 30px;
 }
@@ -172,7 +169,7 @@ img{
 	margin-bottom: 100px;
 }
 
-a:link{
+a{
 	color: #cc6600
 }
 
