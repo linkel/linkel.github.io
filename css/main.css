@@ -169,8 +169,16 @@ img{
 	margin-bottom: 100px;
 }
 
-a{
+a:link{
 	color: #cc6600
+}
+
+a:visited{
+	color: #7a3d00
+}
+
+a:hover{
+	color: #eb7500
 }
 
 a.email span{
