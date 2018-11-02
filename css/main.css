@@ -30,10 +30,10 @@ img{
 }
 .nav ul li a{
 	text-decoration: none;
-	color: #908b8b;
+	color: #423f3f;
 	font-weight: bold;
 	font-size: 17px;
-	transition: .4s all;
+	transition: .3s all;
 }
 .nav ul li a:hover{
 	color: black;
@@ -83,7 +83,8 @@ img{
 }
 .hero-text h3 a:hover{
 	color: black;
-	background: #cc6600;
+	background: #ec7600;
+	transition: 0.1s;
 }
 .learn-btn{
 	position: relative;
@@ -121,7 +122,7 @@ img{
     float: right;
 }
 .social img{
-	width: 20px;
+	width: 40px;
 }
 .social a{
 	margin-left: 10px;
@@ -233,7 +234,7 @@ a.email {
 		text-align: center;
 	}
 	.nav ul li{
-		padding-left: 20px;
+		padding-left: 0px;
 	}
 	.hero{
 		margin-top: 100px;
