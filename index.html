@@ -1,120 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- Thanks for checking my source out. Hope you like it! -->
-  <meta charset="utf-8">
-  <title>Kelly Lin</title>
-  <meta name="description" content="From pharma to programming.">
-  <meta name="author" content="Kelly Lin">
-  <meta name="keywords" content="Kelly, Kelly Lin, Pharma, Formulations, R&D, Programming, Software Development, Software Engineering">
-  <meta property="og:title" content="Kelly Lin">
-  <meta property="og:description" content="From pharma to programming.">
-  <meta property="og:image" content="http://kellylin.me/images/logo.jpg">
-  <meta property="og:url" content="http://kellylin.me">
-  
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Kelly Lin</title>
+    <meta name="description" content="From pharma to programming." />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, Pharma, Formulations, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Kelly Lin" />
+    <meta property="og:description" content="From pharma to programming." />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="js/jquery-3.3.1.min.js"></script>
+  </head>
 
-  <!-- Font
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="http://kellylin.me"><img src="images/logo.png"/></a>
+        </div>
+        <nav>
+          <a href="https://github.com/linkel">Projects</a> 
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/resume">Resume</a>-->
+          <a href="#" onclick="scrollView();return false;">Contact</a>
+        </nav>
+      </header>
 
-  <!-- JQuery
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="js/jquery-3.3.1.min.js"></script>
-
-</head>
-<body>
-
-  <div class="container">
-    <div class="row nav">
-      <div class="one column logo">
-        <a href="http://kellylin.me"><img src="images/logo.png" /></a>
-      </div>
-      <div class="eleven columns">
-        <ul>
-          <!--<li><a href="">Projects</a></li>-->
-          <!--<li><a href="">Blog</a></li>-->
-          <li><a href="#talk" onclick="scrollView();return false;">Contact</a></li>
-          <!--<li><a href="http://kellylin.me/resume.pdf">Resume</a></li>-->
-        </ul>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <div class="row hero">
-      <div class="four columns hero-profile">
-        <img src="images/profile.png" />
-      </div>
-      <div class="eight columns hero-text">
-        <div class="wrapper">
-          <h1>Hey there! I'm Kelly.</h1>
-          <h3>I enjoy <a href="https://github.com/linkel">programming</a>, <a href="https://www.goodreads.com/user/show/8388644-kelly-l">reading</a> & <a href="http://usapl.liftingdatabase.com/lifters-view?id=8074">powerlifting.</a></h3>
-          <!--<div class="learn-btn"><a href="eventually, a personal blog post">Tell Me More</a></div>-->
+      <div class="banner">
+        <div class="leftside"><img src="images/profile.png" /></div>
+        <div class="rightside">
+          <div class="bannerTEXT">
+            <h1>Hey there! I'm Kelly.</h1>
+            <h3>
+              I enjoy <a href="https://github.com/linkel">programming</a>,
+              <a href="https://www.goodreads.com/user/show/8388644-kelly-l"
+                >reading</a
+              >
+              &
+              <a href="http://usapl.liftingdatabase.com/lifters-view?id=8074"
+                >powerlifting.</a
+              >
+            </h3>
+            <!--
+              <div class="learn-btn"><a href="eventually, a personal blog post">Tell Me More</a></div>
+            -->
+          </div>
           <div class="social">
-                <a href="https://github.com/linkel/"><img src="images/github.svg" /></a>
-                <a href="https://www.linkedin.com/in/ironcarbide/"><img src="images/linkedin.svg" /></a>
-              </div>
+            <a href="https://github.com/linkel/"
+              ><img src="images/github.svg"
+            /></a>
+            <a href="https://www.linkedin.com/in/ironcarbide/"
+              ><img src="images/linkedin.svg"
+            /></a>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    
 
-  <div class="container">
-    <div class="row about-title">
-      <div class="twelve columns">
+    <div class="bodytext">
+      <div class="aboutme">
         <h2>About Me</h2>
-        <p>R&D formulations researcher in the pharmaceutical industry for 4 years. Previously in the lab doing chemistry,
-            now pivoting to programming.
-      </div>
-    </div>
-    <div class="row about-end">
-      <div class="twelve columns">
+        <p>
+          R&D formulations researcher in the pharmaceutical industry for 4
+          years. Previously in the lab doing chemistry, now pivoting to
+          programming.
+        </p>
         <p>Current Focus: Python, MongoDB, Javascript, React</p>
-      </div>
-      <div class="twelve columns">
         <p>Languages I'd like to learn eventually: Lisp, Rust</p>
-        </div>
-    </div>
-  </div>
-
-  <div class="container" id="talk">
-    <div class="row talk-title talk-bottom">
-      <div class="twelve columns">
-        <h2>Contact</h2>
-        <p>You can get in touch with me through the following email address: </p>
-        <div><p id="email">Please enable Javascript to view this email address. Sorry, just worried about web scrapers.</p></div>
       </div>
     </div>
+
+    <div class="contact">
+      <h2>Contact</h2>
+      <p>You can get in touch with me through the following email address:</p>
+      <p id="email">Please enable Javascript to view my email address.</p>
+    </div>
+
   </div>
-
-  <script type="text/javascript">
-    $(document).ready(function(){
-      var a = 'kellylincode';
-      a += '@';
-      a += 'gmail.com';
-      $("p#email").text(a);
-    });
-    function scrollView(){
-      document.querySelector('#talk').scrollIntoView({ 
-        behavior: 'smooth' 
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var a = "kellylincode";
+        a += "@";
+        a += "gmail.com";
+        $("p#email").text(a);
       });
-    }
-  </script>
-
-</body>
+      function scrollView() {
+        document.querySelector(".contact").scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+    </script>
+  </body>
 </html>

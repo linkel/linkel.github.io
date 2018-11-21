@@ -1,0 +1,297 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* Variables */
+/* After Reset, global styles */
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: 62.5%;
+}
+html,
+body {
+  font-family: 'Raleway', sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: 'Raleway', sans-serif;
+}
+h1 {
+  font-size: 4rem;
+  line-height: 1.2;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+h2 {
+  font-size: 3.6rem;
+  padding-bottom: 50px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 2.7rem;
+  padding-bottom: 10px;
+}
+h4 {
+  font-size: 2.5rem;
+  padding-bottom: 10px;
+}
+p {
+  line-height: 1.5;
+  font-size: 2.2rem;
+  padding-bottom: 10px;
+}
+a {
+  text-decoration: none;
+  color: #2a3036;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+.container {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+/* Index styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 0 5% 50px 5%;
+  align-items: center;
+  padding: 20px 0 20px 0;
+}
+header img {
+  height: 50px;
+}
+@media (max-width: 500px) {
+  header {
+    flex-direction: column;
+    margin: 0 5% 0px 5%;
+  }
+}
+header nav {
+  display: flex;
+  justify-content: space-between;
+  width: 25%;
+}
+@media (max-width: 800px) {
+  header nav {
+    width: 40%;
+  }
+}
+@media (max-width: 500px) {
+  header nav {
+    width: 70%;
+    margin: 25px 0 0px 0;
+  }
+}
+header nav a {
+  padding: 5px 5% 5px 5%;
+  font-size: 1.6rem;
+}
+@media (max-width: 500px) {
+  header nav a {
+    padding: 5px 2% 5px 2%;
+  }
+}
+.banner {
+  display: flex;
+  width: 90%;
+  margin: 50px 5% 50px 5%;
+  justify-content: space-between;
+}
+@media (max-width: 500px) {
+  .banner {
+    flex-direction: column;
+    margin: 25px 5% 25px 5%;
+  }
+}
+.banner .leftside {
+  width: 35%;
+}
+@media (max-width: 500px) {
+  .banner .leftside {
+    width: 70%;
+    margin: 0 15% 0 15%;
+  }
+}
+.banner .rightside {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  justify-content: space-between;
+  border-bottom: 5px solid #cc6600;
+}
+@media (max-width: 500px) {
+  .banner .rightside {
+    width: 100%;
+    margin: 20px 0 0 0;
+  }
+}
+@media (max-width: 500px) {
+  .banner .rightside .bannerTEXT {
+    margin: 30px 0 30px 0;
+  }
+}
+.banner .rightside .bannerTEXT h3 a {
+  font-family: 'raleway';
+  color: white;
+  background: black;
+  transition: 1s all;
+  display: inline-block;
+  padding: 5px 10px 8px 10px;
+  margin-top: 5px;
+}
+.banner .rightside .bannerTEXT h3 a:hover {
+  color: black;
+  background: #ec7600;
+  transition: 0.1s;
+}
+.banner .rightside .social {
+  text-align: right;
+}
+.banner .rightside .social img {
+  padding: 0 0% 0 2%;
+}
+.social img {
+  height: 40px;
+}
+.bodytext {
+  width: 90%;
+  margin: 100px 5% 60px 5%;
+}
+.contact {
+  width: 90%;
+  margin: 50px 5% 50px 5%;
+}
