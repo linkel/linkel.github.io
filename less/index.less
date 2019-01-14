@@ -53,7 +53,8 @@ table {
 @darkgray: rgb(42, 48, 54);
 @orange: #cc6600;
 
-@tablet: (max-width: 800px);
+@small-monitor: (max-width: 1130px);
+@tablet: (max-width: 900px);
 @phone: (max-width: 500px);
 
 /* After Reset, global styles */
@@ -93,7 +94,7 @@ h3 {
 }
 
 h4 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   padding-bottom: 10px;
 }
 
@@ -114,7 +115,7 @@ img {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
@@ -125,7 +126,7 @@ header {
     display: flex;
     justify-content: space-between;
     width: 90%;
-    margin: 0 5% 50px 5%;
+    margin: 0 5% 0px 5%;
     align-items: center;
     padding: 20px 0 20px 0;
     img {
@@ -138,20 +139,25 @@ header {
     nav {
         display: flex;
         justify-content: space-between;
-        width: 25%;
+        //width: 25%; - try no width?
         //width: 45%; - for when I have 4 items in navbar
         @media @tablet {
             //width: 80%; - for when I have 4 items in navbar
-            width: 40%;
+            //width: 40%; - try no width?
         }
         @media @phone {
             //width: 100%; - for when I have 4 items in navbar
-            width: 70%;
+            width: 90%;
             margin: 25px 0 0px 0;
         }
         a {
+            text-align: center;
             padding: 5px 5% 5px 5%;
-            font-size: 1.6rem;
+            width: 150px;
+            font-size: 2.2rem;
+            @media @tablet {
+                padding: 5px 3% 5px 3%;
+            }
             @media @phone {
                 padding: 5px 2% 5px 2%;
             }
@@ -230,3 +236,198 @@ header {
     margin: 50px 5% 50px 5%;
 }
 
+
+/* a tag link brackets */
+
+.link-brackets a:focus::after, .link-brackets a:focus::before, .link-brackets a:hover::after, .link-brackets a:hover::before {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+.link-brackets a::before {
+    margin-right: 10px;
+    content: '[';
+    -webkit-transform: translateX(20px);
+    transform: translateX(20px);
+}
+.link-brackets a::after, .link-brackets a::before {
+    display: inline-block;
+    opacity: 0;
+    transition: -webkit-transform .3s,opacity .2s;
+    transition: transform .3s,opacity .2s;
+}
+
+.link-brackets a:focus::after, .link-brackets a:focus::before, .link-brackets a:hover::after, .link-brackets a:hover::before {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+.link-brackets a::after {
+    margin-left: 10px;
+    content: ']';
+    -webkit-transform: translateX(-20px);
+    transform: translateX(-20px);
+}
+.link-brackets a::after, .link-brackets a::before {
+    display: inline-block;
+    opacity: 0;
+    transition: -webkit-transform .3s,opacity .2s;
+    transition: transform .3s,opacity .2s;
+}
+
+
+/* project styles */
+
+
+.project-banner {
+    margin: 0 auto 0px auto;
+    width: 90%;
+}
+.project-body {
+    width: 90%;
+    margin: 40px 5% 60px 5%;
+    @media @phone {
+        margin: 20px 5% 20px 5%;
+    }
+}
+
+.project-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 0 50px 0;
+    @media @tablet {
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+    }
+}
+
+.project-card {
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    width: 330px;
+    height: 350px;
+    border-radius: 2px;
+    h3 {
+        padding: 20px;
+    }
+    h4 {
+        color: rgb(80, 65, 59);
+    } // image size targets 330 x 227?
+    img {
+        filter: brightness(60%);
+        transition-duration: 0.4s;
+        height: 227px;
+        width: 330px;
+    }
+    img:hover {
+        filter: brightness(100%);
+    }
+    @media @small-monitor {
+        width: 264px;
+        height: 280px;
+        img {
+            height: 181px;
+            width: 280px;
+        }
+        h3 {
+            font-size: 2.2rem;
+        }
+    }
+    @media @tablet {
+        width: 66%;
+        height: 70%;
+        margin: 20px;
+        img {
+            height: 100%;
+            width: 100%;
+        }
+    }
+    @media @phone {
+        width: 86%;
+        height: 90%;
+        margin: 15px;
+    }
+}
+
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-description{
+    display: none;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-around;
+    align-items:center;
+    border-top: 1px solid rgb(233, 233, 233);
+    padding-top: 10px;
+}
+
+// title of project page
+
+.project-title {
+    position: absolute;
+    width: 600px;
+    background-color: rgb(41, 40, 37);
+    margin: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: #FAFAFA;
+    border: 2px solid #FAFAFA;
+    padding: 25px;
+    opacity: 0.8;
+    top: 200px;
+    cursor: default;
+    @media @tablet {
+        width: 50%;
+        top: 125px;
+        padding: 15px;
+        margin: 10px 4px;
+        h1 {
+            font-size: 3rem;
+            padding: 0;
+        }
+    }
+    @media @phone {
+        width: 70%;
+        top: 175px;
+    }
+  }
+.project-title:hover {
+    background-color: rgb(37, 22, 5);
+}
+
+// font awesome icons
+
+.expand {
+    font-size: 2em;
+    cursor: pointer;
+    padding: 20px;
+}
+.fontawesome {
+    font-size: 2.5em;
+    transition: color 0.2s;
+    cursor: pointer;
+    @media @small-monitor {
+        font-size: 1.5em;
+    }
+    @media @tablet {
+        font-size: 2.5em;
+        padding-bottom: 10px;
+    }
+}
+
+.fontawesome:hover {
+    color: #ec7600;
+}
+
+#expand {
+    display: none;
+}
