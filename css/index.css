@@ -358,7 +358,8 @@ header nav a {
 .project-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 0 0 50px 0;
 }
 @media (max-width: 900px) {
@@ -373,6 +374,7 @@ header nav a {
   width: 330px;
   height: 350px;
   border-radius: 2px;
+  margin: 20px 10px;
 }
 .project-card h3 {
   padding: 20px;
