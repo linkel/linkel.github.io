@@ -177,6 +177,10 @@ img {
   max-width: 100%;
   height: auto;
 }
+.regular-links {
+  font-size: 24px;
+  color: blue;
+}
 .container {
   max-width: 1200px;
   width: 100%;
@@ -214,8 +218,8 @@ header nav {
 }
 header nav a {
   text-align: center;
-  padding: 5px 5% 5px 5%;
-  width: 150px;
+  /* padding: 5px 5% 5px 5%;
+  width: 150px; */
   font-size: 2.2rem;
 }
 @media (max-width: 900px) {
@@ -293,6 +297,10 @@ header nav a {
 .bodytext {
   width: 90%;
   margin: 100px 5% 60px 5%;
+}
+.bodytext-talks {
+  width: 80%;
+  margin: 100px 10% 60px 10%;
 }
 .contact {
   width: 90%;
