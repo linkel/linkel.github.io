@@ -180,6 +180,7 @@ img {
 .regular-links {
   font-size: 24px;
   color: blue;
+  margin: 0 0px 0 30px;
 }
 .container {
   max-width: 1200px;
