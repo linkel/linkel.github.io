@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Kelly Lin: Blog</title>
+    <meta name="description" content="From pharma to programming." />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Kelly Lin" />
+    <meta property="og:description" content="From pharma to programming." />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+          <h1 id="theres-method-to-the-madness-behind-css">There's Method To the Madness Behind CSS</h1>
+          <p>I made a new Angular component whose SCSS file ended up looking like so:</p>
+          <pre><code>.super-button {
+          
+            cursor: pointer;
+          
+            &amp;__content {
+              display: flex;
+              align-items: center;
+              transition: opacity .5s linear;
+            }
+          
+            &amp;__active-description {
+              color: $dark-text;
+              font-weight: $bold-font;
+              padding-left: 8px;
+            }
+          
+            &amp;__inactive-description {
+              color: $dark-text;
+              padding-left: 8px;
+            }
+          }
+          
+          .active {
+            color: $input-selected;
+          }
+          
+          .inactive {
+            color: $input-selected;
+            background-color: $input-background;
+            border-radius: 100px;
+          }</code></pre>
+          <p>The html file for this component consisted of a label tag wrapping some goodies inside.</p>
+          <pre><code>&lt;label class=&quot;super-button&quot; for=&quot;{{SuperButtonId}}&quot;&gt;
+          GOODIES INSIDE
+          &lt;/label&gt;</code></pre>
+          <p>Happy with this, I pushed this to our repo for UI components (a repo for general and reusable components) and then used it in a different repository for an application. I saw that there was an 8px margin-bottom for label tags that was caused by Reboot. This was undesirable because it did not match with the mockup that the UX team had come up with.</p>
+          <p>So I slapped a quick</p>
+          <pre><code>label {
+              margin: 0;
+          }</code></pre>
+          <p>into that super-button CSS, since Angular separates out CSS for components by appending an <code>_ngcontent-something</code> to the class. But that didn't work, and I should have thought about that more! Why doesn't it work?</p>
+          <p>The answer is...</p>
+          <p>CSS specificity! Using label like that was using a type selector, and Reboot was also using a type selector and apparently getting applied after my component so it'd overwrite what I had.</p>
+          <p>Easy for me to say this now. At the time I was googling with phrases like <code>&quot;margin css not getting overidden angular&quot;</code> and looking at articles on Stack Overflow with names like <code>&quot;How can I override Bootstrap CSS styles?&quot;</code> and <code>&quot;Can't override the angular theme with my css properties&quot;</code>. I actually left off working on it on a Friday and worked on other components until I came back to it on Tuesday with a clearer head.</p>
+          <p>So the solution was to use a more specific selector to apply my <code>margin: 0</code> desires.</p>
+          <p>Conveniently, I had made a class selector already for that label! By adding:</p>
+          <pre><code>.super-button {
+          
+            cursor: pointer;
+            margin: 0; &lt;------------------- right here
+          
+            &amp;__content {
+              display: flex;
+              align-items: center;
+              transition: opacity .5s linear;
+            }
+          
+            &amp;__active-description {
+              color: $dark-text;
+              font-weight: $bold-font;
+              padding-left: 8px;
+            }
+          
+            &amp;__inactive-description {
+              color: $dark-text;
+              padding-left: 8px;
+            }
+          }</code></pre>
+          <p>I was able to get rid of that <code>8px margin-bottom</code>.</p>
+          <p>There's a couple of takeaways for me here.</p>
+          <p>First, I ought to do better with remembering selectors.</p>
+          <p>From weaker to stronger:</p>
+          <ol style="list-style-type: decimal">
+          <li>Type Selectors</li>
+          <li>Class Selectors</li>
+          <li>ID Selectors</li>
+          </ol>
+          <p>Second, anything that seems unreasonable or insane in CSS is often just me not knowing the peculiarities of CSS sufficiently. It's therapeutic to throw my hands up and bemoan how illogical CSS looks, but I should keep in mind that most of the time it's a failure of understanding on my end. CSS is a many-tentacled beast because it's had to support a lot over the decades that it's existed. I'm merely a few years older than CSS myself.</p>
+          <p>That said, there's certainly times when libraries like Bootstrap, etc. will inadvertently clash with what a developer is trying to do due to naming or use of !important. In conclusion--it's complicated.</p>
+      </div>
+    </div>
+  </body>
+</html>

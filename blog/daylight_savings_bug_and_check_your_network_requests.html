@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Kelly Lin: Blog</title>
+    <meta name="description" content="From pharma to programming." />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Kelly Lin" />
+    <meta property="og:description" content="From pharma to programming." />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="daylight-savings-bug-and-check-your-network-requests">
+          Daylight Savings Bug, and Check Your Network Requests
+        </h1>
+        <p>
+          So let's say we have a date picker component. Using it, we can select
+          a date range on a calendar of up to 180 days to pull up workouts
+          belonging to different lifters with possible form issues in their
+          squats and benches and deadlifts. These form issues get determined by
+          some algorithm on the videos (like for bar path deviating
+          significantly from an ideal path, knees buckling in til they nearly
+          touch, lumbar spine curvature, etc).
+        </p>
+        <p>
+          In this application we limit the date selection to 181 days, which is
+          the 180 days plus today. Both the front end and the backend validate
+          on this. The validator in the backend checks the start and end date
+          and subtracts them to make sure that the difference is not more than
+          181 days.
+        </p>
+        <p>
+          Our front end is written in Angular 2+ and the backend is C#. Here is
+          the backend validation:
+        </p>
+        <pre><code>RuleFor(request =&gt; request.StartDate).NotEmpty().WithMessage(StartDateRequiredMessage);
+          RuleFor(request =&gt; request.EndDate).NotEmpty().WithMessage(EndDateRequiredMessage);
+          RuleFor(request =&gt; request).Must(req =&gt; req.StartDate &lt;= req.EndDate)
+          .WithMessage(StartDateLaterThanEndDateMessage);
+          RuleFor(request =&gt; request).Must(req =&gt; (req.EndDate - req.StartDate).TotalDays &lt;= 181)
+          .WithMessage(LessThan181DaysMessage);
+          </code></pre>
+        <p>
+          We have another datepicker in another section of the application that
+          does the same exact thing, but instead of looking at workouts with
+          form tips it looked at special meetings that lifters would have with
+          their coaches that would record information about what they discussed.
+          Let's call the first one the Workout List Datepicker and the second
+          one the Coaching Datepicker.
+        </p>
+        <p>
+          A bug was reported for the Coaching Datepicker where the user could
+          select the max range of dates allowed by this datepicker and yet get
+          an error. Looking into the error revealed that it was failing at the
+          <code>req.EndDate - req.StartDate.TotalDays &lt;= 181.</code>
+        </p>
+        <p>
+          Playing around with the date range showed that it had to do with
+          daylight savings time--specifically when one hour was added to a day
+          in November. This meant that originally, subtracting the start date
+          from the end date would always result in something 181 or less,
+          because it would be 180 days permitted and including the current day.
+          When DST was added to the picture, this meant that it would be 181
+          days plus an extra hour, and so it would fail to validate the model
+          there.
+        </p>
+        <p>
+          I was confused at why the first one was fine and the second one was
+          having issues, since they do the same thing.
+        </p>
+        <p>
+          I compared code in different areas of the application and was having
+          quite a hard time finding out what was different. The validation was
+          exactly the same. In the front end, it stored the date as an
+          <code>ngbDateStruct</code> in both.
+        </p>
+        <p>I opened up Chrome's network tab and compared the requests.</p>
+        <p>The failing one's query params:</p>
+        <pre><code>?groupIds=2bb2d9b4-c801-e111-81ce-e61f13277aab&amp;
+          selfGroupIds=&amp;formIds=&amp;lifterIds=&amp;coachIds=&amp;
+          pageNumber=1&amp;pageSize=10&amp;startDate=2018-09-04T07:00:00.000Z&amp;
+          endDate=2019-03-04T08:00:00.000Z&amp;sortDirection=desc</code></pre>
+        <p>The working one's query params:</p>
+        <pre><code>?videoGroupIds=2bb2d9b4-c801-e111-81ce-e61f13277aab&amp;
+          selfVideoGroupIds=&amp;startDate=2018-9-4&amp;endDate=2019-3-4&amp;
+          pageNumber=1&amp;pageSize=10&amp;triggerIds=&amp;statusIds=&amp;formIds=&amp;
+          gymIds=&amp;lifterIds=&amp;includeAllLifterAndCoachVideos=true&amp;
+          sortField=RecordDateLocal&amp;sortDirection=desc</code></pre>
+        <p>
+          Wait a second... The format of the date on the requests is different!
+        </p>
+        <p>
+          In our failing one, the date format in the GET request query params
+          looked like this:
+        </p>
+        <pre><code>&amp;startDate=2018-09-04T07:00:00.000Z&amp;endDate=2019-03-04T08:00:00.000Z</code></pre>
+        <p>In the working one, the date format looked like this:</p>
+        <pre><code>&amp;startDate=2018-9-4&amp;endDate=2019-3-4</code></pre>
+        <p>
+          So the failing one is in ISO format, and the working one truncates it
+          to the day. If I had taken a couple more steps in investigating the
+          front-end code, I would have seen that before the request was sent
+          out, it does go through a conversion in a different component.
+        </p>
+        <pre><code>const startDate = NgbDateHelper.ngbDateToISOString(req.startDate);</code></pre>
+        <p>
+          I had to get some history about how this came about. Turns out that
+          the working one was written purposefully inaccurately because users
+          would be viewing information for someone else potentially in another
+          timezone, and they'd select the day that the person told them they had
+          worked out, but not get the information because the timezone was off
+          and technically it was an earlier or later day in the viewer's
+          timezone. So implementing it inaccurately on purpose resulted in
+          easier usability. When this inaccurate request gets to the backend,
+          it's assumed to be at midnight by the validator so subtracting them
+          always stays below 181 days.
+        </p>
+        <p>
+          The accurate one would fail because 1 hour does get added to a day
+          from daylight savings time. Our solution, then, was simply to edit the
+          validator to 182 days.
+        </p>
+        <br>
+        <h3>Helpful points for debugging:</h3>
+        <ol style="list-style-type: decimal">
+          <li>
+            Daylight savings time with adding and subtracting an hour in
+            November and in March is something to keep in mind!
+          </li>
+          <li>
+            Look at the network tab in Chrome to check what the requests look
+            like. Can also use Fiddler for more information.
+          </li>
+          <li>
+            In a large codebase, check the services being called as well.
+            Understand what happens at the interface between the front-end and
+            the back-end.
+          </li>
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>

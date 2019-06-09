@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Kelly Lin: Blog</title>
+    <meta name="description" content="From pharma to programming." />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Kelly Lin" />
+    <meta property="og:description" content="From pharma to programming." />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="group-by-in-linq-to-turn-flat-rows-into-nested-rows">
+          Group By in LINQ To Turn Flat Rows Into Nested Rows
+        </h1>
+        <p>
+          Let's say we're grabbing data from a database that returns it to us in
+          the form of a list of these
+          <code>GetEnemyActivityResult</code> objects.
+        </p>
+        <pre><code>    public class GetEnemyActivityResult
+              {
+                  public Guid ActivityId { get; set; }
+                  public int TypeId { get; set; }
+                  public int OptionKeyId { get; set; }
+                  public string Value { get; set; }
+          
+              }</code></pre>
+        <p>
+          There are different notifications that one of our fortresses generates
+          when enemy activity is captured on camera.
+        </p>
+        <p>
+          However, we need to map the objects into the EnemyActivity object
+          format:
+        </p>
+        <pre><code>    public class EnemyActivity
+              {
+                  public Guid ActivityId { get; set; }
+                  public int TypeId { get; set; }
+                  public IEnumerable&lt;ActivityDetail&gt; ActivityDetails { get; set; }
+              }
+          
+              public class ActivityDetail
+              {
+                  public int OptionKeyId { get; set; }
+                  public string Value { get; set; }
+              }</code></pre>
+        <p>
+          Each record of enemy activity has a unique activity id, but there are
+          some TypeIds that will have different OptionKeyIds associated with
+          them that have completely different meanings to their value. When we
+          get our information from the database in that first
+          <code>GetEnemyActivityResult</code> format, they come in rows like:
+        </p>
+        <pre><code>
+          ActivityId TypeId OptionKeyId Value
+          1            3        10       90
+          2            5        2        140
+          2            5        3        335</code></pre>
+        <p>
+          Imagine that before mapping, these were all objects in a list,
+          <code>activity</code>:
+        </p>
+        <pre><code>activity[0] = { 
+                  ActivityId = 1, 
+                  TypeId = 3, 
+                  OptionKeyId = 10, 
+                  Value = 90 
+              }; 
+          
+          activity[1] = { 
+                  ActivityId = 2, 
+                  TypeId = 5, 
+                  OptionKeyId = 2, 
+                  Value = 140 
+              }; 
+          
+          activity[2] = { 
+                  ActivityId = 2, 
+                  TypeId = 5, 
+                  OptionKeyId = 3, 
+                  Value = 335 
+              }; </code></pre>
+        <p>After mapping:</p>
+        <pre><code>activityMapped[0] = { 
+              ActivityId = 1, 
+              TypeId = 3, 
+              ActivityDetails = [
+                  { OptionKeyId = 10, Value = 90 }
+                  ]
+              }; 
+          
+          activityMapped[1] = {
+              ActivityId = 2, 
+              TypeId = 5, 
+              ActivityDetails = [
+                  { OptionKeyId = 2, Value = 140 },
+                  { OptionKeyId = 3, Value = 335 }
+                  ]
+              }; </code></pre>
+        <p>So how can we do this with a LINQ query?</p>
+        <p>
+          The first parameter of this GroupBy method is the keySelector
+          function, with which you can extract the key for each element. In our
+          case the key was the ActivityId, since that piece indicates an
+          entirely unique notification for enemy alerts.
+        </p>
+        <p>
+          The second parameter is the elementSelector, which is a function that
+          maps each source element to an element in the grouping. In our case we
+          want the rest of the information in the object.
+        </p>
+        <p>
+          Lastly we have the resultSelector, which is a function that creates a
+          result value from each group. So we pass in the key and the elements
+          to generate a new EnemyActivity object using that key and elements.
+        </p>
+        <p>
+      <pre><code>
+        getActivityResults.GroupBy( 
+          res =&gt; res.ActivityId, 
+          res =&gt; new { res.TypeId, res.OptionKeyId, res.Value }, (key, properties) =&gt;
+              new EnemyActivity { 
+                  ActivityId = key, 
+                  TypeId = properties.First().TypeId, 
+                  ActivityDetails = properties.Select(res =&gt; 
+                      new ActivityDetail{ 
+                          OptionKeyId = res.OptionKeyId, 
+                          Value = res.Value 
+                      }).ToList()
+            });</code></pre>
+        </p>
+        <p>
+          Hurray! Now we can get the notifications in the format that we want
+          from our fortress.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
