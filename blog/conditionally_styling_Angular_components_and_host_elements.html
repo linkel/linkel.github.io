@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Conditionally Styling Angular Components and Host Elements</title>
+    <meta
+      name="description"
+      content="Conditionally Styling Angular Components and Host Elements"
+    />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta
+      property="og:title"
+      content="Conditionally Styling Angular Components and Host Elements"
+    />
+    <meta
+      property="og:description"
+      content="Conditionally Styling Angular Components and Host Elements"
+    />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1
+          id="conditionally-styling-components-and-host-elements-in-angular-7"
+        >
+          Conditionally Styling Components and Host Elements in Angular 7
+        </h1>
+        <h2 id="conditionally-set-a-style-value-depending-on-a-property">
+          Conditionally Set a Style Value Depending On a Property
+        </h2>
+        <p>
+          Let's say I added some new features to an application and didn't think
+          too much about spacing. And consequently I discover that two types of
+          customized dropdown components I have are now jutting out beyond the
+          page. Having the dropdowns all drop upwards doesn't make me feel
+          happy, so I would like to make some changes to these components so
+          that the maximum height on the window that opens up when the component
+          is clicked can be customized by its <code>@Input</code>.
+        </p>
+        <p>Right now the parent component looks like:</p>
+        <pre><code>    &lt;dropdown [formControlName]=&quot;myControlKey&quot;
+              [items]=&quot;awesomeDropdownItems&quot;
+              [placeholderLabel]=&quot;Select Awesome Type&quot;&gt;
+    &lt;/dropdown&gt;</code></pre>
+        <p>And I want to be able to provide it an extra input of height:</p>
+        <pre><code>    &lt;dropdown [formControlName]=&quot;myControlKey&quot;
+              [items]=&quot;awesomeDropdownItems&quot;
+              [placeholderLabel]=&quot;Select Awesome Type&quot;
+              [height]=&quot;&#39;150px&#39;&quot;&gt;
+    &lt;/dropdown&gt;</code></pre>
+        <p>
+          In my class, I consequently add a new
+          <span class="citation">@Input</span> with a default of whatever the
+          CSS was previously:
+        </p>
+        <pre><code>export class DropdownComponent implements OnInit, OnChanges, AfterViewInit, ControlValueAccessor {
+
+    @Input() items: DropdownItem[];
+    @Input() placeholderLabel?: string;
+    @Input() height = &#39;200px&#39;; // &lt;--- my new input!
+    </code></pre>
+        <p>
+          Then in my list that pops open when the dropdown component is clicked,
+          I want to bind to the style property of that element.
+        </p>
+        <p>
+          Previously, it had an ngClass applying an expanded or a collapsed
+          class depending on whether the variable <code>expanded</code> was
+          present.
+        </p>
+        <pre><code>&lt;ul [ngClass]=&quot;{&#39;dropdown-expanded&#39;: expanded, &#39;dropdown-collapsed&#39;: !expanded, &#39;dropUp&#39;: dropUp}&quot;&gt;</code></pre>
+        <p>Since this is all nicely set up, all I have to add is:</p>
+        <pre><code>&lt;ul [style.max-height]=&quot;expanded ? height : &#39;0&#39;&quot; [ngClass]=
+          &quot;{&#39;dropdown-expanded&#39;: expanded, &#39;dropdown-collapsed&#39;: !expanded, &#39;dropUp&#39;: dropUp}&quot;&gt;</code></pre>
+        <p>
+          This ternary conditional expression then applies the max-height that I
+          want from the input onto this element. I then remove the previous CSS
+          styling that was in the dropdown-expanded and dropdown-collapsed class
+          that affected the max-height, since it is now redundant and will
+          always be overridden.
+        </p>
+        <h2 id="conditionally-set-a-style-value-on-a-host-element">
+          Conditionally Set a Style Value on a Host Element
+        </h2>
+        <p>
+          I mentioned that I had two custom dropdown components! The second one
+          is a fancier one--it's a a typeahead input that allows multiple
+          selection. So a user can type part of what they're looking for, and it
+          has checkboxes that permit selection of multiple items. Because of the
+          way the component was consequently written, the element that I was
+          looking to enable a <code>height</code> customization on was actually
+          a host element of the actual component (which was also split into
+          several parts and a directive itself).
+        </p>
+        <p>
+          Instead of adding a ternary conditional into HTML markup, I had to add
+          in the Angular style property binding into the
+          <span class="citation">@Component</span> decorator.
+        </p>
+        <pre><code>@Component({
+    selector: &#39;typeahead-window&#39;,
+    exportAs: &#39;TypeaheadWindow&#39;,
+    styleUrls: [&#39;../typeahead-directive/typeahead.scss&#39;],
+    host: {
+        &#39;class&#39;: &#39;typeahead-dropdown-menu&#39;, 
+        &#39;role&#39;: &#39;listbox&#39;, 
+        &#39;[id]&#39;: &#39;id&#39;, 
+        &#39;[style.max-height]&#39;: &#39;height&#39;}, // right here is where I add in the height variable
+    ... // ng-template removed to focus on the above
+  `
+})
+export class TypeaheadWindow implements OnInit {
+...</code></pre>
+        <p>
+          Then, like for the previous dropdown component, I connected the
+          plumbing as appropriate to enable the component to take a new
+          <span class="citation">@Input</span>.
+        </p>
+        <p>
+          Finally, don't forget to update the mocks! Otherwise you can be like
+          me and see 55 tests fail with some variant of
+        </p>
+        <pre><code>    [ERROR -&gt;][height]=&quot;&#39;150px&#39;&quot;&gt;
+            &lt;/dropdown&gt;
+        &lt;/div&gt;
+        Error: Template parse errors:
+        Can&#39;t bind to &#39;windowMaxHeight&#39; since it isn&#39;t a known property of &#39;dropdown&#39;. </code></pre>
+      </div>
+    </div>
+  </body>
+</html>
