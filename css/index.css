@@ -256,7 +256,7 @@ header nav a {
 
 @media (max-width: 500px) {
   header nav a {
-    padding: 5px 2% 5px 2%;
+    padding: 5px 0 5px 0;
   }
 }
 
@@ -596,13 +596,20 @@ code {
   font-family: monospace;
 }
 
+@media (max-width: 500px) {
+  pre code {
+    font-size: 1.4rem;
+  }
+}
+
 pre {
   padding: 20px 0 20px 0;
   margin: 20px 0 20px 0;
   background-color: rgb(246, 245, 245);
+  white-space: pre-wrap;
 }
 
-/* blog page styles */
+/* blog styles */
 
 .blog-body {
   margin: 40px 5% 60px 6%;
@@ -627,18 +634,54 @@ pre {
   padding-bottom: 40px;
 }
 
+@media (max-width: 500px) {
+  .blog-body h1 {
+    font-size: 2.4rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
 .blog-body h3 {
   font-weight: bold;
   padding-top: 20px;
   padding-bottom: 20px;
 }
 
+@media (max-width: 500px) {
+  .blog-body h2 {
+    font-size: 2.0rem;  
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .blog-body h3 {
+    font-size: 2.0rem;
+    line-height: 1.5;
+  }
+}
+
 .blog-post p {
   margin: 0 2% 0 2%;
 }
 
+@media (max-width: 500px) {
+  .blog-post p {
+    font-size: 1.6rem;
+  }
+}
+
 .blog-body .read-more {
   color: #cc6600;
+  line-height: 3;
+}
+
+@media (max-width: 500px) {
+  .blog-body .read-more{
+    font-size: 1.6rem;
+  }
 }
 
 .blog-body .read-more:hover {
