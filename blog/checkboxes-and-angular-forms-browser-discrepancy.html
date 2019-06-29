@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Checkboxes and Angular Reactive Forms Browser Discrepancy</title>
+    <meta name="description" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
+    <meta property="og:description" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="browser-behavior-discrepancy-on-checkboxes-in-angular-reactive-forms">Browser Behavior Discrepancy on Checkboxes in Angular Reactive Forms</h1>
+<p>Chrome and Firefox versus IE and Edge.</p>
+<p>I noticed a discrepancy on how these browsers treat checkboxes when using Angular's reactive forms.</p>
+<p>I had a form, inside which was a label linked to a checkbox input. The starting state of the checkbox was checked. There was an input number box that would be disabled if the checkbox was checked, and when the checkbox was unchecked, it would be enabled. I also had two icons--a checked and an unchecked icon that would display based on the Angular form value.</p>
+<pre><code>CHECKED?  |  Value inside criteria to call writeValue with
+          |
+True      |  Empty array [] 
+          |
+False     |  { id: LibraryKey.Awesome, awesomeValue: &#39;0&#39;}
+</code></pre>
+<pre><code>&lt;form [formGroup]=&quot;formGroup&quot; class=&quot;awesome-control&quot;&gt;
+    &lt;label for=&quot;awesomeCheckBox&quot; *ngIf=&quot;!formGroup.disabled&quot;&gt;
+        &lt;input style=&quot;display: none;&quot;
+               id=&quot;awesomeCheckBox&quot;
+               type=&quot;checkbox&quot;
+               formControlName=&quot;awesomeCheckBox&quot;
+               (click)=&quot;toggleInput()&quot;&gt;</code></pre>
+<p>Initially we had it set up like so:</p>
+<pre><code>    toggleInput(): void {
+        const newValue: AwesomeFormValue[] = [{
+            criteria: this.awesomeCheckBox.value
+                ? [ { id: LibraryKey.Awesome, awesomeValue: &#39;0&#39;} ]
+                : [],
+        }];
+        this.writeValue(newValue);
+    }</code></pre>
+<p>That when this.awesomeCheckBox.value was true, we would show that value 0 because the check for whether it was true or not was happening prior to the click. So if the checkbox was currently checked (true) and we clicked it to set it to false, it seemed to check prior to the click and set the value to value 0 and then the checkbox would appear false. Hence we would have the correct correspondence of &quot;False&quot; checkbox with awesomeValue: 0.</p>
+<p>Then we discovered that in IE and Edge, this failed because it was checking the truth status after the click. So if the checkbox was currently checked and we clicked it to set to false, it checked after the click and would see that checkbox was false, and would incorrectly choose to writeValue the criteria with empty array.</p>
+<p>IE and Edge's behavior here seems a bit more sensible than Chrome and Firefox but either way there was a discrepancy.</p>
+<p>So I found that wrapping it in a setTimeout of 0 would make Chrome and Firefox have the same behavior as IE and Edge.</p>
+<pre><code>    toggleInput(): void {
+        setTimeout(() =&gt; {
+            const newValue: AwesomeFormValue[] = [{
+                criteria: this.awesomeCheckBox.value
+                    ? [ { id: LibraryKey.Awesome, awesomeValue: &#39;0&#39;} ]
+                    : [],
+            }];
+            this.writeValue(newValue);
+        }, 0);
+    }
+</code></pre>
+<p>However, this looks hacky.</p>
+<p>Looking over at some official Angular code, you can see that Angular passes the $event into the function that's handling the change.</p>
+<p><a href="https://github.com/angular/angular/blob/master/packages/forms/src/directives/checkbox_value_accessor.ts">https://github.com/angular/angular/blob/master/packages/forms/src/directives/checkbox_value_accessor.ts</a></p>
+<p>That's so much nicer-looking. It's reminiscent of vanilla JS and some common React code in passing in the event (or the SyntheticEvent in the case of React). Let's do that.</p>
+<p>The markup:</p>
+<pre><code>&lt;form [formGroup]=&quot;formGroup&quot; class=&quot;awesome-control&quot;&gt;
+    &lt;label for=&quot;awesomeCheckBox&quot; *ngIf=&quot;!formGroup.disabled&quot;&gt;
+        &lt;input style=&quot;display: none;&quot;
+               id=&quot;awesomeCheckBox&quot;
+               type=&quot;checkbox&quot;
+               formControlName=&quot;awesomeCheckBox&quot;
+               (click)=&quot;toggleInput($event.target.checked)&quot;&gt;</code></pre>
+<p>The TypeScript file:</p>
+<pre><code>    toggleInput(isChecked: boolean): void {
+        const newValue: AlertSubscriptionFormValue[] = [{
+            alertTypeId: AlertType.Idle,
+            subscriptionCriteria: isChecked
+                ? []
+                : [ { alertOptionKeyId: AlertOptionKey.IdleDuration, alertValue: &#39;0&#39; } ],
+        }];
+
+        this.writeValue(newValue);
+    }</code></pre>
+<p>Now we have the desired functionality, with a much less hackier-looking fix.</p>
+  </body>
+</html>
