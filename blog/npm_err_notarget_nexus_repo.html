@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>npm ERR! notarget when using a Nexus repository</title>
+    <meta name="description" content="npm ERR! notarget when using a Nexus repository" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="npm ERR! notarget when using a Nexus repository" />
+    <meta property="og:description" content="npm ERR! notarget when using a Nexus repository" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="../index.html">Contact</a>
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="something-small-npm-err-notarget">Something small: npm ERR! notarget</h1>
+        <h2 id="npm-err-notarget-when-using-a-nexus-repository-that-takes-packages-from-npm">npm ERR! notarget when using a Nexus repository that takes packages from npm</h2>
+        <p>I had a build that was previously fine, but after changing a line that was unrelated to anything, the build failed with the following message:</p>
+        <pre><code>[12:04:38][Step 2/7] Step 1/1: NPM Install (Command Line) (14s)
+        [12:04:38][Step 1/1] Starting: [REDACTED]
+        [12:04:38][Step 1/1] in directory: [REDACTED]
+        [12:04:42][Step 1/1] npm WARN deprecated istanbul@0.4.5: This module is no longer maintained, try this instead:
+        [12:04:42][Step 1/1] npm WARN deprecated   npm i nyc
+        [12:04:42][Step 1/1] npm WARN deprecated Visit https://istanbul.js.org/integrations for other alternatives.
+        [12:04:45][Step 1/1] npm WARN deprecated circular-json@0.5.9: CircularJSON is in maintenance only, flatted is its successor.
+        [12:04:50][Step 1/1] npm WARN deprecated circular-json@0.3.3: CircularJSON is in maintenance only, flatted is its successor.
+        [12:04:52][Step 1/1] npm ERR! code ETARGET
+        [12:04:52][Step 1/1] npm ERR! notarget No matching version found for @angular-devkit/build-webpack@0.800.4
+        [12:04:52][Step 1/1] npm ERR! notarget In most cases you or one of your dependencies are requesting
+        [12:04:52][Step 1/1] npm ERR! notarget a package version that doesn&#39;t exist.
+        [12:04:52][Step 1/1] npm ERR! notarget 
+        [12:04:52][Step 1/1] npm ERR! notarget It was specified as a dependency of &#39;@angular-devkit/build-angular&#39;
+        [12:04:52][Step 1/1] npm ERR! notarget 
+        [12:04:52][Step 1/1] 
+        [12:04:52][Step 1/1] npm ERR! A complete log of this run can be found in:
+        [12:04:52][Step 1/1] npm ERR!     [REDACTED]
+        [12:04:52][Step 1/1] Process exited with code 1
+        [12:04:53][Step 1/1] Process exited with code 1
+        [12:04:52][Step 1/1] Step NPM Install (Command Line) failed</code></pre>
+        <p>Note the line about &quot;No matching version found&quot;!</p>
+        <p>In my package.json file, I had</p>
+        <pre><code>    &quot;@angular-devkit/build-angular&quot;: &quot;~0.800.0&quot;,</code></pre>
+        <p>Looking over on Github, I found that Angular's devkit/build-angular had just been updated an hour ago.</p>
+        <p>The Nexus repository that my project used takes a day or so to update. So because I had selected the latest patch version of that angular-devkit package, npm knew that a new one had come out but the project could not find it on Nexus.</p>
+        <p>I refreshed myself on the version numbering format.</p>
+        <pre><code>Number order:
+        
+        major version, minor version, patch version</code></pre>
+        <pre><code>equals  &quot;=0.800.0&quot;  exact version
+        
+        caret   &quot;^0.800.0&quot;  minor version
+        
+        tilde   &quot;~0.800.0&quot;  patch version</code></pre>
+        <p>The equals will get me exactly version 0.800.0.</p>
+        <p>The caret gets me 0.801.0 if it exists, but wouldn't update for a new 1.000.0.</p>
+        <p>The tilde gets me 0.800.1 if it exists, but wouldn't update for 0.801.0.</p>
+        <p>Good to keep in mind!</p>
+  </body>
+</html>
