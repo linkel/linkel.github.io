@@ -8,9 +8,11 @@ To my horror, I discovered recently that I have forgotten about my LESS file whe
 
 # To Do:
 * [x] Get the blog up
-* [ ] Publish one blog article per month in 2019
+* [ ] Write one blog article per month in 2019
     * [x] June
-    * [ ] July
+    * [x] July
+    * [ ] Aug - I have some drafts, but have not published
+    * [ ] Sept
 * [ ] Refactor the CSS!
 * [ ] How can I automate the pandoc conversion more and slap my headers on easily?
 * [ ] If I have a fun topic to give another talk on, I can put more slides up on the Talks page.
