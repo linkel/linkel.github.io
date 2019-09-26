@@ -11,7 +11,7 @@ To my horror, I discovered recently that I have forgotten about my LESS file whe
 * [ ] Write one blog article per month in 2019
     * [x] June
     * [x] July
-    * [ ] Aug - I have some drafts, but have not published
+    * [x] Aug
     * [ ] Sept
 * [ ] Refactor the CSS!
 * [ ] How can I automate the pandoc conversion more and slap my headers on easily?

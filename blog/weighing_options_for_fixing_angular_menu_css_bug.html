@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Weighing Options For Fixing Angular Menu CSS Bug</title>
+    <meta name="description" content="Weighing Options For Fixing Angular Menu CSS Bug" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Weighing Options For Fixing Angular Menu CSS Bug" />
+    <meta property="og:description" content="Weighing Options For Fixing Angular Menu CSS Bug" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="journeying-all-over-the-place">Journeying all over the place</h1>
+        <p>August 28, 2019</p><br>
+<p>Bug where the context menu in Spanish had a line that was much longer than the English variant, so it fell off the screen on mobile.</p>
+<p>Possible options:</p>
+<ol style="list-style-type: decimal">
+<li>Dynamically style it</li>
+<li>Keep menu right aligned and move the button over to be closer</li>
+<li>Word wrap</li>
+</ol>
+<p>The first option appealed to me on a fun technical level.</p>
+<p>I looked at the dynamic styling, had to look into Breakpoint observer, but found out we had a UserDeviceService that had an isMobile() function to check if it matched our application.</p>
+<p>Initial edit of the HTML:</p>
+<pre><code>&lt;div *ngIf=&quot;showMoreActionsContextMenu&quot; [ngStyle]=&quot;{&#39;left&#39; : pixelsStyleLeft}&quot; class=&quot;action-bar-item__more-actions__context-menu&quot;&gt;
+        &lt;context-menu [menuItems]=&quot;actionMenuItems&quot;
+                      [textAlign]=&quot;ContextMenuTextAlign.LEFT&quot;
+                      [placement]=&quot;ContextMenuPlacement.BOTTOM_RIGHT&quot;&gt;
+        &lt;/context-menu&gt;
+&lt;/div&gt;</code></pre>
+<pre><code> private calculateContextMenuPosition(): void {
+        this.breakpointObserver
+            .observe([&#39;(max-width: 415px)&#39;, &#39;(orientation: portrait)&#39;, &#39;(max-width: 813px)&#39;, &#39;(orientation: landscape)&#39;])
+            .subscribe((state: BreakpointState) =&gt; {
+                if (state.breakpoints[&#39;(max-width: 415px)&#39;] &amp;&amp; state.breakpoints[&#39;(orientation: portrait)&#39;]
+                || state.breakpoints[&#39;(max-width: 813px)&#39;] &amp;&amp; state.breakpoints[&#39;(orientation: landscape)&#39;]) {
+                    const lengthArray = this.actionMenuItems.map(item =&gt; item.label.length);
+                    const longest = Math.max(...lengthArray);
+                    const result = this.leftPixelsStartingFromZero - longest * this.pixelsPerCharacter;
+
+                    this.pixelsStyleLeft = result + &#39;px&#39;;
+                } else {
+                    this.pixelsStyleLeft = &#39;none&#39;;
+                }
+            });
+    }</code></pre>
+<p>Refactored to use UserDeviceService and early return from the if:</p>
+<pre><code>    private calculateContextMenuPosition(): void {
+        if (!this.userDeviceService.isMobile()) {
+            this.pixelsStyleLeft = &#39;none&#39;;
+            return;
+        }
+        const lengthArray = this.actionMenuItems.map(item =&gt; item.label.length);
+        const longest = Math.max(...lengthArray);
+        const result = this.pixelLeftWhenZeroCharacters - longest * this.pixelsPerCharacter;
+
+        this.pixelsStyleLeft = result + &#39;px&#39;;
+    }</code></pre>
+<p>Now it dynamically decides its width based on how many characters are inside the item!</p>
+<p>[please imagine an image here of dynamic sizing]</p>
+<p>But thinking about it, it felt like a solution that was troublesome to maintain. We didn't really do this anywhere else in our services much. Furthermore, I really should not be looking at the character number, but the actual width of it once it is rendered on the DOM, since text size would make a difference. That would require rendering the element, hiding it, measuring its width, then adjusting the width and then displaying it. Now it's starting to look like too much code for a visual defect. If I could treat all languages exactly the same instead of making some calculation out of the length, that'd be preferable.</p>
+<p>So instead, the second option was to move the action bar item button so that it's more centered/to the right, and keep the context menu always right aligned. Then everything gets the same treatment. One of the senior engineers thought this was the best for maintainability, and I agreed. Easy peasy, just add a justify-content: center!</p>
+<p>[please imagine a picture here of the action bar buttons now centered]</p>
+<p>But the excitement didn't end. Another team member was working on a new feature that would add an extra button to the menu. With the item button now set to be centered instead of left aligned, it caused the buttons to look misaligned on mobile, since there was only space for two buttons per line. The original left-alignment looked much better on mobile, so my change was suboptimal. I went back to try the third option: word wrapping the context menu items.</p>
+<p>In the action-bar, which uses the context menu, the important change would be passing in a string value that would indicate the maximum width before wrapping. Once we hit this width we would want to activate wrapping styling.</p>
+<pre><code>            &lt;div *ngIf=&quot;showMoreActionsContextMenu&quot; class=&quot;action-bar-item__more-actions__context-menu&quot;&gt;
+                &lt;context-menu [menuItems]=&quot;actionMenuItems&quot;
+                              [textAlign]=&quot;ContextMenuTextAlign.LEFT&quot;
+                              [placement]=&quot;ContextMenuPlacement.BOTTOM_RIGHT&quot;
+                              [maxWidthBeforeWrap]=&quot;contextMenuMaxWidth&quot;&gt;  &lt;---- the new bit
+                &lt;/context-menu&gt;
+            &lt;/div&gt;</code></pre>
+<p>I wandered over to the project where the context menu lived. In the context menu's html, I added a line where the ngStyle would apply a max-width if it got a maxWidthBeforeWrap, and would apply normal or nowrap of white-space if there was a maxWidth provided.</p>
+<pre><code>        &lt;ng-container *ngFor=&quot;let item of menuItems&quot;&gt;
+            &lt;li class=&quot;context-menu__list__item&quot;
+                *ngIf=&quot;item.show&quot;
+                [ngStyle]=&quot;{&#39;max-width&#39;: maxWidthBeforeWrap, &#39;white-space&#39;: maxWidthBeforeWrap ? &#39;normal&#39; : &#39;nowrap&#39;}&quot;
+                [ngClass]=&quot;{
+                    &#39;context-menu__list__item--disabled&#39;: !item.enabled,
+                    &#39;context-menu__list__item--selected&#39;: item.selected,
+                    &#39;context-menu__list__item--dark&#39;: colorScheme === ContextMenuColorScheme.DARK,
+                    &#39;context-menu__list__item--selected--dark&#39;: item.selected &amp;&amp; colorScheme === ContextMenuColorScheme.DARK}&quot;
+                (click)=&quot;item.enabled &amp;&amp; item.action()&quot;&gt;
+                {{item.label}}
+            &lt;/li&gt;
+        &lt;/ng-container&gt;</code></pre>
+<p>This meant that I would add a new <span class="citation">@Input</span>() that was the maxWidthBeforeWrap to the class.</p>
+<pre><code>export class ContextMenuComponent implements OnInit {
+    @Input() menuItems: ContextMenuItem[];
+    @Input() textAlign: ContextMenuTextAlign;
+    @Input() placement: ContextMenuPlacement;
+    @Input() colorScheme: ContextMenuColorScheme = ContextMenuColorScheme.LIGHT;
+    @Input() maxWidthBeforeWrap?: string;</code></pre>
+<p>Also added some new tests--for when there was a maxWidthBeforeWrap and when there wasn't.</p>
+<pre><code>    describe(&#39;When context menu component is initialized with a maxWidthBeforeWrap value&#39;, () =&gt; {
+        beforeEach(() =&gt; {
+        // we have some other things going on in the context menu being tested, which needs what the function below is setting up
+            setComponentValues(expectedMenuItems, &#39;left&#39;, undefined, undefined, expectedMaxWidthString); 
+        });
+
+        it(&#39;sets the max-width on the context menu items to the provided value&#39;, () =&gt; {
+            TestHelper.assertElementHasStyle(componentElement, &#39;.context-menu__list__item&#39;, &#39;max-width&#39;, &#39;200px&#39;);
+        });
+
+        it(&#39;sets the white-space on the context menu items to normal&#39;, () =&gt; {
+            TestHelper.assertElementHasStyle(componentElement, &#39;.context-menu__list__item&#39;, &#39;white-space&#39;, &#39;normal&#39;);
+        });
+    });</code></pre>
+<p>Now we consume the changes in our front-end, action bar component!</p>
+<pre><code>            &lt;div *ngIf=&quot;showMoreActionsContextMenu&quot; class=&quot;action-bar-item__more-actions__context-menu&quot;&gt;
+                &lt;context-menu [menuItems]=&quot;actionMenuItems&quot;
+                              [textAlign]=&quot;ContextMenuTextAlign.LEFT&quot;
+                              [placement]=&quot;ContextMenuPlacement.BOTTOM_RIGHT&quot;
+                              [maxWidthBeforeWrap]=&quot;contextMenuMaxWidth&quot;&gt;
+                &lt;/context-menu&gt;
+            &lt;/div&gt;</code></pre>
+<p>And make sure to update our mock for the context menu.</p>
+<pre><code>export class ContextMenuComponentMock {
+
+    @Input() menuItems: ContextMenuItem[];
+    @Input() textAlign: ContextMenuTextAlign;
+    @Input() placement: ContextMenuPlacement;
+    @Input() colorScheme: ContextMenuColorScheme;
+    @Input() maxWidthBeforeWrap: string;
+
+    constructor() {}
+}</code></pre>
+<p>And now the items inside of the context menu wrap.</p>
+<p>Conclusion: sometimes the most preferred solution changes if teammates are working in areas that are affected by the solution, and one must accept that sometimes work will have to be redone. There's a balance between maintainability and how a decision affects other areas of an application.</p>
+</body>
+</html>

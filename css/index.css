@@ -236,7 +236,7 @@ header nav {
 
 @media (max-width: 500px) {
   header nav {
-    width: 90%;
+    width: 65%;
     margin: 25px 0 0px 0;
   }
 }
