@@ -13,6 +13,7 @@ To my horror, I discovered recently that I have forgotten about my LESS file whe
     * [x] July
     * [x] Aug
     * [ ] Sept
+    * [x] Oct
 * [ ] Refactor the CSS!
 * [ ] How can I automate the pandoc conversion more and slap my headers on easily?
 * [ ] If I have a fun topic to give another talk on, I can put more slides up on the Talks page.
