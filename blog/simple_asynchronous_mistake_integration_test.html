@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Simple Asynchronous Mistake In An Integration Test</title>
+    <meta
+      name="description"
+      content="Simple Asynchronous Mistake In An Integration Test"
+    />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta
+      property="og:title"
+      content="Simple Asynchronous Mistake In An Integration Test"
+    />
+    <meta
+      property="og:description"
+      content="Simple Asynchronous Mistake In An Integration Test"
+    />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="simple-async-mistake">
+          Simple Asynchronous Mistake In An Integration Test
+        </h1>
+        <p>This one's a small tidbit of a mistake I made.</p>
+        <p>
+          I was using NUnit for testing a data access layer in my application.
+          This area of interest makes a database update to a row after a
+          different service finishes a process and gives me back the id via a
+          message (brokered by RabbitMQ).
+        </p>
+        <p>
+          I quickly wrote up the data access test since it was just going to be
+          a matter of:
+        </p>
+        <ol style="list-style-type: decimal">
+          <li>
+            Make a new row in the decision table on the database with an known
+            Guid that I generate
+          </li>
+          <li>That row's evalId is NULL at first</li>
+          <li>Use the real system's UpdateDecisionWithEvalId to update it</li>
+          <li>Check that the row with the known Guid now has the new evalId</li>
+        </ol>
+        <p>At this point the code looked like this:</p>
+        <pre><code>    [TestFixture]
+    public class EvalBackfillDataAccessTests
+    {
+        private IEvalBackfillDataAccess _sut;
+        private Guid _expectedDecisionId;
+
+        [SetUp]
+        public void Setup()
+        {
+            _expectedDecisionId = Guid.NewGuid();
+            AddDecision(_expectedDecisionId); // A function that creates a new row in our decision table in the database
+            _sut = TestBootstrapper.Container.GetService&lt;IEvalBackfillDataAccess&gt;();
+        }
+
+        public class WhenUpdateDecisionWithEvalIdIsCalled : EvalBackfillDataAccessTests
+        {
+            [Test]
+            public void Task It_updates_the_decision_with_the_eval_id()
+            {
+                var evalId = Guid.NewGuid();
+                _sut.UpdateDecisionWithEvalId(_expectedDecisionId, evalId);
+                var expectedEvalId = GetEvalIdByDecisionId(_expectedDecisionId);
+                Assert.AreEqual(expectedEvalId, evalId);
+            }
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+            DeleteDecision(_expectedDecisionId);
+        }</code></pre>
+        <p>Where the Add and DeleteDecision methods look like:</p>
+        <pre><code>    internal static int AddDecision(Guid decisionId)
+    {
+        using (var conn = new SqlConnection(TestBootstrapper.DBConnectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand(string.Format(AddDecisionSql, decisionId), conn))
+            {
+                return cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    internal static int DeleteDecision(Guid decisionId)
+    {
+        using (var conn = new SqlConnection(TestBootstrapper.DBConnectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand(string.Format(DeleteDecisionSql, decisionId), conn))
+            {
+                return cmd.ExecuteNonQuery();
+            }
+        }
+    }</code></pre>
+        <p>
+          And the sql is pretty straightforward. Won't show the add since
+          there's a lot of different data that gets added but the delete was
+          like:
+        </p>
+        <pre><code>    private const string DeleteDecisionSql = @&quot;
+        delete from [myschema].[Decision] where DecisionId = &#39;{0}&#39;&quot;;</code></pre>
+        <p>I ran the test and it failed with a:</p>
+        <pre><code>System.InvalidCastException : Unable to cast object of type &#39;System.DBNull&#39; to type &#39;System.Guid&#39;</code></pre>
+        <p>Why?</p>
+        <p>
+          I had a brain fart and forgot to await the system under test's call!
+          It's making a database call and needs to update that row, but since I
+          forgot to wait around for that update to finish my sql query in the
+          next line immediately runs and of course it's null. A simple
+          asynchronous mistake.
+        </p>
+        <p>Glad it wasn't anything more complicated than that.</p>
+        <p>End result:</p>
+        <pre><code>    [Test]
+    public async Task It_updates_the_decision_with_the_eval_id()
+    {
+        var evalId = Guid.NewGuid();
+        await _sut.UpdateDecisionWithEvalId(_expectedDecisionId, evalId);
+        var expectedEvalId = GetEvalIdByDecisionId(_expectedDecisionId);
+        Assert.AreEqual(expectedEvalId, evalId);
+    }
+</code></pre>
+      </div>
+    </div>
+  </body>
+</html>

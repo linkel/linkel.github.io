@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Database Permissions, A Scripting Variable Mistake</title>
+    <meta name="description" content="Database Permissions, A Scripting Variable Mistake" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Database Permissions, A Scripting Variable Mistake" />
+    <meta property="og:description" content="Database Permissions, A Scripting Variable Mistake" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="db-perms">
+          Database Permissions, A Scripting Variable Mistake
+        </h1>
+        <p>In the database, we use scripting variables to hold the service account usernames across our different integration, staging, validation, and production environments. We declare these variables in the project (sqlproj) and it's editable through any text editor, though Visual Studio spruces up the appearance into a table.</p>
+        <p>There are different publish profiles for each environment and the xml file for each will initialize the scripting variables to the desired values.</p>
+        <p>I created a new listener service the other day that makes a database table update based on messages on topics it was consuming.</p>
+        <p>I went over to the publish profile for the integration environment and supplied it with a scripting variable key value pair.</p>
+        <pre><code>&lt;SqlCmdVariable Include=&quot;ServiceAccount_EvalBackfill&quot;&gt;&lt;Value&gt;COMPANY\integ_EvalBackfill&lt;/Value&gt;&lt;/SqlCmdVariable&gt;</code></pre>
+        <p>I also made it a user role via</p>
+        <pre><code>create role [EvalBackfill] authorization [dbo];</code></pre>
+        <p>Then inserted that role, and made permissions for it.</p>
+        <pre><code>The columns are:
+        PermissionAction, PermissionName, SchemaName, ObjectName, ObjectType, PermissionRecipient
+        for something like:
+        (&#39;grant&#39;, &#39;execute&#39;, null, &#39;myschema&#39;, &#39;schema&#39;, &#39;EvalBackfill&#39;)
+        that gets inserted into the permissions </code></pre>
+        <p>I pushed it. For these services we use OpenShift (containerization platform that uses Docker containers managed by Kubernetes), which automatically deploys successful builds. Boom! Deployed! But nothing happened when a message came through. I logged onto Kibana (data visualization for Elasticsearch) and filtered for my service.</p>
+        <p>Found this:</p>
+        <pre><code>exception_message       Login failed for user &#39;COMPANY\integ_EvalBackfill&#39;.
+        exception_method        Void HandlePolicyResult(Polly.OutcomeType, System.Exception)</code></pre>
+        <p>Hey, didn't I make the user role and permission? But wait! Turns out I forgot to declare the scripting variable in the first place. Scripting variables need to be declared prior to being initialized. I had to go into Visual Studio, navigate over to variables within properties, and add a line for declaring the variable.</p>
+        <p>If you open up the sqlproj instead of viewing it in Visual Studio, it looks like this:</p>
+        <pre><code>    &lt;SqlCmdVariable Include=&quot;ServiceAccount_EvalBackfill&quot;&gt;
+              &lt;DefaultValue&gt;
+              &lt;/DefaultValue&gt;
+              &lt;Value&gt;$(SqlCmdVar__11)&lt;/Value&gt; &lt;--- whatever number it is on the row
+            &lt;/SqlCmdVariable&gt;</code></pre>
+        <p>With that added, my service was able to successfully make the database call. All good!</p>
+      </div>
+    </div>
+  </body>
+</html>
