@@ -7,14 +7,9 @@ It's fun writing a blog. Currently I am using pandoc to convert my markdown to h
 To my horror, I discovered recently that I have forgotten about my LESS file when revamping the site and adding blog articles, and instead have been making edits to the CSS file. I'm going to have to refactor this...
 
 # To Do:
-* [x] Get the blog up
-* [ ] Write one blog article per month in 2019
-    * [x] June
-    * [x] July
-    * [x] Aug
-    * [ ] Sept
-    * [x] Oct
-	* [ ] Oct #2
+* [ ] Opinion page on powerlifting, climbing, fitness
+* [ ] Book Review page!
+* [ ] One blog post for 2020, perhaps?
 * [ ] Refactor the CSS!
 * [ ] How can I automate the pandoc conversion more and slap my headers on easily?
 * [ ] If I have a fun topic to give another talk on, I can put more slides up on the Talks page.
