@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Invalid React Hook Call with Enzyme Tests</title>
+    <meta
+      name="description"
+      content="Invalid React Hook Call with Enzyme Tests"
+    />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta
+      property="og:title"
+      content="Invalid React Hook Call with Enzyme Tests"
+    />
+    <meta
+      property="og:description"
+      content="Invalid React Hook Call with Enzyme Tests"
+    />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+        <h1 id="invalid-react-hook-call-with-enzyme-tests">
+          Invalid React Hook Call with Enzyme Tests
+        </h1>
+        <p>
+
+            "Hooks can only be called inside the body of a function
+            component."
+          
+        </p>
+        <p>
+          I was getting this error with my enzyme unit tests after I had changed
+          a React functional component to have some useMemo and useCallback
+          functions wrapping a few variables.
+        </p>
+        <p>Let's say my component looked like this:</p>
+        <pre><code>export function SpecialIcon(props: IconProps): JSX.Element {
+  const { origin, tooltipStyle, contentClass } = props;
+
+  const iconTooltip = (
+    &lt;div className={contentClass}&gt;Example Icon Very Cool&lt;/div&gt;
+  );
+
+  return (
+    &lt;IconWithTooltip
+      renderButton={showTooltip =&gt; (
+        &lt;ButtonWidget
+          testId=&#39;special-icon&#39;
+          onMouseOver={showTooltip}
+        &gt;
+          &lt;SvgSpecialIcon /&gt;
+        &lt;/ButtonWidget&gt;
+      )}
+      tooltipContent={iconTooltip}
+      tooltipDelay={0}
+      tooltipStyle={tooltipStyle}
+      origin={origin}
+    /&gt;
+  );
+}</code></pre>
+        <p>
+          And I wanted to memoize and only render when changes have occurred, so
+          I changed it to:
+        </p>
+        <pre><code>export function SpecialIcon(props: IconProps): JSX.Element {
+  const { origin, tooltipStyle, contentClass } = props;
+
+  const iconTooltip = React.useMemo(
+    () =&gt; {
+      return (
+        &lt;div className={contentClass}&gt;Example Icon Very Cool&lt;/div&gt;
+      );
+    },
+    [contentClass]);
+
+  const renderButton = React.useCallback(
+    (showTooltip: () =&gt; void) =&gt; {
+      return (
+        &lt;ButtonWidget
+          testId=&#39;special-icon&#39;
+          onMouseOver={showTooltip}
+        &gt;
+          &lt;SvgSpecialIcon /&gt;
+        &lt;/ButtonWidget&gt;
+      );
+    },
+    []
+  );
+
+  return (
+    &lt;IconWithTooltip
+      renderButton={renderButton}
+      tooltipContent={iconTooltip}
+      tooltipDelay={0}
+      tooltipStyle={tooltipStyle}
+      origin={origin}
+    /&gt;
+  );
+}</code></pre>
+        <p>
+          Pretty straightforward usage of useMemo and useCallback. Worked fine
+          when manually testing.
+        </p>
+        <p>My tests looked something like this:</p>
+        <pre><code>describe(&#39;SpecialIcon Tests&#39;, () =&gt; {
+  const props: ChangeTypeDisplayIconProps = {
+    [other prop stuff omitted]
+    contentClass = &#39;testClass&#39;
+  };
+
+  it(&#39;mounts&#39;, () =&gt; {
+    withComponent(SpecialIcon(props), wrapper =&gt; {
+      expect(wrapper.find(SvgSpecialIcon).length).toBe(1);
+    });
+  });
+
+  it(&#39;displays the tooltip when hovered over&#39;, () =&gt; {
+    withComponent(SpecialIcon(props), wrapper =&gt; {
+      const buttonWrapper = wrapper.find(ButtonWidget);
+      const tooltipBeforeHover = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltipBeforeHover.exists()).toBe(false);
+      buttonWrapper.simulate(&#39;mouseover&#39;);
+      const tooltip = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltip.exists()).toBe(true);
+    });
+  });
+
+  it(&#39;displays information about the icon in the tooltip&#39;, () =&gt; {
+    withComponent(SpecialIcon(props), wrapper =&gt; {
+      const buttonWrapper = wrapper.find(ButtonWidget);
+      buttonWrapper.simulate(&#39;mouseover&#39;);
+      const tooltip = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltip.exists()).toBe(true);
+      expect(tooltip.text().includes(&#39;Example Icon Very Cool&#39;)).toBe(true);
+    });
+  });
+});</code></pre>
+        <p>
+          withComponent uses Enzyme's mount on the first parameter and runs the
+          tests in the second parameter then unmounts at the end.
+        </p>
+        <p>
+          When I ran my unit tests the tests failed with
+          <code
+            >Invariant Violation: Invalid hook call. Hooks can only be called
+            inside of the body of a function component.</code
+          >
+          React documentation is kind enough to give three possible reasons why
+          this error has occurred.
+        </p>
+        <pre><code>1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app</code></pre>
+        <p>
+          So what's going on here? In my tests, I was passing as the first
+          parameter the component as a function that takes props. Hooks are
+          supposed to be called at the top level of a function component or in
+          the body of a custom hook. Because my test then calls that function,
+          it's trying to do hook things within a function that isn't a
+          functional component and that throws an error since it breaks the
+          <a href="https://reactjs.org/docs/hooks-rules.html">Rules of Hooks</a
+          >. To fix it, I've got to use SpecialIcon as a React functional
+          component like this: <code>&lt;SpecialIcon {...props} /&gt;</code>
+        </p>
+        <pre><code>describe(&#39;SpecialIcon Tests&#39;, () =&gt; {
+  const props: ChangeTypeDisplayIconProps = {
+    [other prop stuff omitted]
+    contentClass = &#39;testClass&#39;
+  };
+
+  it(&#39;mounts&#39;, () =&gt; {
+    withComponent(&lt;SpecialIcon {...props} /&gt;, wrapper =&gt; {
+      expect(wrapper.find(SvgSpecialIcon).length).toBe(1);
+    });
+  });
+
+  it(&#39;displays the tooltip when hovered over&#39;, () =&gt; {
+    withComponent(&lt;SpecialIcon {...props} /&gt;, wrapper =&gt; {
+      const buttonWrapper = wrapper.find(ButtonWidget);
+      const tooltipBeforeHover = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltipBeforeHover.exists()).toBe(false);
+      buttonWrapper.simulate(&#39;mouseover&#39;);
+      const tooltip = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltip.exists()).toBe(true);
+    });
+  });
+
+  it(&#39;displays information about the icon in the tooltip&#39;, () =&gt; {
+    withComponent(&lt;SpecialIcon {...props} /&gt;, wrapper =&gt; {
+      const buttonWrapper = wrapper.find(ButtonWidget);
+      buttonWrapper.simulate(&#39;mouseover&#39;);
+      const tooltip = wrapper.find(&#39;.testClass&#39;);
+      expect(tooltip.exists()).toBe(true);
+      expect(tooltip.text().includes(&#39;Example Icon Very Cool&#39;)).toBe(true);
+    });
+  });
+});</code></pre>
+        <p>
+          React enforces these rules around hooks in order to keep hooks called
+          in the same order when a component renders, and also to make it
+          obvious that there is stateful logic that can happen (with a React
+          functional component vs a TypeScript function). I guess that's fair
+          enough.
+        </p>
+        <p>Glad it was something simple and not gnarly!</p>
+      </div>
+    </div>
+  </body>
+</html>
