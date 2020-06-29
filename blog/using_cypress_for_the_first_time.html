@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Using Cypress for the First Time</title>
+    <meta name="description" content="Using Cypress for the First Time" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Using Cypress for the First Time" />
+    <meta property="og:description" content="Using Cypress for the First Time" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+<h1 id="using-cypress-for-the-first-time">Using Cypress for the first time</h1>
+<p>Cypress is a front-end e2e/e2m (end-to-end, end-to-middle) and integration testing framework. It lets you write tests that mimic user interaction with your web application running in a browser. It shows information about GET and POST requests made at each point of interaction and you can stub what response should come back from a particular request type to a matching url.</p>
+<p>In the application I've been working on there are ways for users to connect to different types of databases with credentials and save/load specific data from them. We use Cypress to do some of these user action sequences and make sure the UI is displaying the stub data as expected.</p>
+<p>The main benefit of Cypress is that you can dictate what ideal or edge case scenarios might be by laying out the user interaction steps and controlling network responses, and test that the UI outcome is as expected. For example, after someone clicks a button on the UI to kick off a process, maybe that button should get grayed out.</p>
+<pre><code>describe(&#39;When button is clicked&#39;, function() {
+
+  it(&#39;Sends the foo and grays out the button&#39;, function() {
+    setUpRoutes();
+    cy.visit(&#39;/&#39;);
+
+    // open menu, verify button is enabled
+    selectors.getMenu().click();
+    selectors.getButton().not(&#39;.aria-disabled&#39;).should(&#39;exist&#39;);
+
+    // click button
+    selectors.getButton().click();
+
+    // complete dialog
+    selectors.getDialog().click();
+
+    // verify button is disabled afterwards
+    selectors.getMenu().click();
+    // see [should syntax](https://docs.cypress.io/api/commands/should.html#Syntax)
+    selectors.getButton().should(&#39;have.attr&#39;, &#39;aria-disabled&#39;, &#39;true&#39;);
+  });
+});
+
+// Selectors file
+export const selectors = {
+  getMenu: () =&gt; cy.get(&#39;[test-id=&quot;Process-Menu&quot;]&#39;),
+  getButton: () =&gt; cy.get(&#39;[test-id=&quot;Process-Button&quot;]&#39;),
+  getDialog: () =&gt; cy.get(&#39;[test-id=&quot;Process-Dialog&quot;]&#39;),
+
+}</code></pre>
+<h2 id="cypress-routes">Cypress Routes</h2>
+<p>So the previous example was pretty simple--it was just some UI behavior, no http requests changing display of data on the UI.</p>
+<p>But like I mentioned one of the big benefits from Cypress is the stubbing out of responses that should come from APIs that are called. Let's say the application makes a call to <code>https://localhost:8080/loc/efb57/proj</code> where <code>efb57</code> could be any string. We can first start the Cypress server by calling <code>cy.server()</code>, then we can specify the route matching with <code>cy.route('GET', 'loc/**/proj', 'fixture:common/projects.json')</code>.</p>
+<p>The first parameter is the type of request, the second is the url matching, and the third is the response, connected via cy.fixture() in a string format where I have a folder /common/ that contains a file called projects.json that has my response.</p>
+<p>Now when the application makes a call to the url that matches the second parameter, it'll get back the json file I put in and I can test what I expect to occur if it gets that file (UI should display data accordingly, error message for sad cases, etc).</p>
+<h2 id="cypress-resets-cy.server-after-each-test-case">Cypress resets cy.server() after each test case</h2>
+<p>So the codebase I was in had a function that would set up some routes like so:</p>
+<pre><code>const serviceX = &#39;coolService/api/&#39;;
+const serviceY = &#39;api/anotherService/info&#39;;
+
+export function setUpRoutes() {
+  cy.server();
+  cy.route(&#39;GET&#39;, serviceX + &#39;userSession/current&#39;, &#39;fixture:common/sessions.current.json&#39;).as(&#39;currentUserSession&#39;);
+  cy.route(&#39;GET&#39;, serviceY + &#39;loc/**/proj&#39;, &#39;fixture:common/projects.json&#39;).as(&#39;projects&#39;);
+}</code></pre>
+<p>I thought if I just slapped my route for my test in there that I'd be good to go. I was not good to go.</p>
+<p>Somehow I assumed I just had to run the function once in a before block like</p>
+<pre><code>before(() =&gt; {
+  setupRoutes();
+  // other stuff
+});</code></pre>
+<p>And then I'd have all my routes set up so that I could run my tests. Instead, what happened was that watching my Cypress run, I saw the real XHR (XmlHttpRequest) show up instead of the XHR stub from Cypress.</p>
+<p>So I struggled around with my tests for a little while reordering things until I realized I have to start <code>cy.server()</code> and set up routes again. So putting it inside of a beforeEach solved my confusion. <a href="https://docs.cypress.io/api/commands/server.html#Notes">Cypress documentation</a> says this here:</p>
+<pre><code>Server persists until the next test runs
+Cypress automatically continues to persist the server and routing configuration even after a test ends. This means you can continue to use your application and still benefit from stubbing or other server configuration.
+
+However between tests, when a new test runs, the previous configuration is restored to a clean state. No configuration leaks between tests.</code></pre>
+<p>Could have saved myself some time if I'd scrolled down more.</p>
+      </div>
+    </div>
+  </body>
+</html>
