@@ -161,8 +161,8 @@ h1 {
 
 h2 {
   font-size: 3.6rem;
-  padding-top: 20px;
-  padding-bottom: 40px;
+  padding-top: 30px;
+  padding-bottom: 30px;
   font-weight: bold;
 }
 
@@ -288,7 +288,7 @@ header nav a {
 .banner .rightside {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 100%; /* Switch this back to 50% if I want to have an image on the left for the banner */
   justify-content: space-between;
   border-bottom: 5px solid #cc6600;
 }
@@ -691,7 +691,8 @@ pre {
 
 ol {
   font-size: 2.2rem;
-  margin: 15px 0 15px 0;
+  margin: 15px 0 15px 30px;
+  list-style: upper-roman;
 }
 
 li {

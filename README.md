@@ -6,12 +6,9 @@ To my horror, I discovered recently that I have forgotten about my LESS file whe
 
 # To Do:
 * [ ] Maybe a redesign? 
-* [ ] Opinion page on powerlifting, climbing, fitness
+* [ ] Perhaps a page on powerlifting, climbing, fitness
+* [ ] Maybe a page about birds?
 * [ ] Book Review page!
-* [x] One blog post for 2020, perhaps?
- * [x] May 2020
- * [x] June 2020
- * [ ] July 2020
 * [ ] Refactor the CSS!
 * [x] How can I automate the pandoc conversion more and slap my headers on easily?
 
