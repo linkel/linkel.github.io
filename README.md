@@ -14,6 +14,15 @@ To my horror, I discovered recently that I have forgotten about my LESS file whe
 
 # Notes to Self
 
+## Script Instructions
+I wrote a script in this folder that I titled [md_to_html](md_to_html.sh) which runs pandoc and sed to convert from md to html, format my html headers, and stick the written content into the template. Should make it a lot easier to write articles and not worry about the manual html copy-pasting afterwards. 
+
+`md_to_html.sh filename title` is the format. 
+
+Example:
+`. md_to_html.sh ./md/SQL-Server-GUID-Sort-Order.md "SQL Server GUID Sort Order"`
+
+## Manual Instructions 
 Converting from markdown to html is done by:
 
 `pandoc test1.md -f markdown -t html -s -o test1.html`
@@ -23,5 +32,3 @@ Converting from markdown to html is done by:
 - -t [type] is to type
 - -s is standalone (HTML with a header and footer)
 - -o [name] is output to what file
-
-I wrote a script in this folder that I titled [md_to_html](md_to_html.sh) which runs pandoc and sed to convert from md to html, format my html headers, and stick the written content into the template. Should make it a lot easier to write articles and not worry about the manual html copy-pasting afterwards. 
