@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Fix for Windows 10 Start Menu Opens and Disappears</title>
+    <meta name="description" content="Fix for Windows 10 Start Menu Opens and Disappears" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Fix for Windows 10 Start Menu Opens and Disappears" />
+    <meta property="og:description" content="Fix for Windows 10 Start Menu Opens and Disappears" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+<h1 id="fix-for-windows-10-start-menu-opens-and-immediately-disappears">Fix for Windows 10, Start Menu Opens And Immediately Disappears</h1>
+<h2 id="start-menu-wont-stay-open">Start Menu Won't Stay Open</h2>
+<p>Around October I had a bizarre issue where I could no longer use the Start Menu for anything other than searching for an application. I had been using Windows 10 for about a year (I had upgraded in Nov 2020 for the sake of playing Assassin's Creed Valhalla) with no issues. I'd previously been on Windows 7.</p>
+<p>When I opened the Start Menu, whether by hitting the Start Menu key or by clicking it, if I immediately began typing it would successfully search for applications. But if I left it open or tried to click the sleep option, it'd flicker and then disappear.</p>
+<p>I went a week or two hobbled with this (I had to use the power button on my case to sleep or shut off the PC) and then I got annoyed enough to fix it.</p>
+<h2 id="the-cause-live-tiles">The Cause: Live Tiles</h2>
+<p>In my case it turned out to be due to the &quot;Live Tiles&quot;. They're the customizable squares in the Start Menu that are sometimes animated, or show live updates for the weather and other miscellaneous items I've never paid attention to.</p>
+<h2 id="the-fix">The Fix</h2>
+<p>I had to use the &quot;Group Policy Editor&quot; to turn off live tiles, restart, and then I think I may even have manually disabled the live tiles out of caution.</p>
+<ol style="list-style-type: decimal">
+<li>Open the Start menu and very quickly type gpedit.msc and hit enter. If you're not quick, the Start Menu will close.</li>
+<li>Alternately, Windows + R will open the Run command, and you can type gpedit.msc in that and hit enter to run it.</li>
+<li>Navigate to Local Computer Policy &gt; User Configuration &gt; Administrative Templates &gt; Start Menu and Taskbar &gt; Notifications.</li>
+<li>Double-click the &quot;Turn off tile notifications entry&quot; on the right and select enabled in the window that opens.</li>
+<li>Click OK and close the editor.</li>
+</ol>
+<p>According to the internet, there's no need to restart for this policy change, but I was not able to open the Start Menu until I had restarted.</p>
+<p>After restarting, I was able to open the Start Menu, and I believe I even right clicked all the tiles and disabled them (or whatever the equivalent of deleting them was in the menu that opened up).</p>
+<p>Since doing the above, my Start Menu has returned to working condition. How bizarre that this would be so glitchy. I wonder if there was an interaction with my previous installation of Windows 7 that caused this? I've been using the same desktop computer, Theseus' ship style, since 2012. Many parts have been replaced over time (motherboard, GPU x2, CPU, PSU x2, RAM) but I've kept all the hard drives I have added over the years.</p>
+<p>So hopefully if you stumble across this with the same issue, this fix works for you.</p>
+      </div>
+    </div>
+  </body>
+</html>
