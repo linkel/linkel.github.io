@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>PostgreSQL jsonb Operators and JPA Query Syntax</title>
+    <meta name="description" content="PostgreSQL jsonb Operators and JPA Query Syntax" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="PostgreSQL jsonb Operators and JPA Query Syntax" />
+    <meta property="og:description" content="PostgreSQL jsonb Operators and JPA Query Syntax" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+<h1 id="postgresql-jsonb-operators-and-jpqljpa-query-vs-nativequery-syntax">PostgreSQL jsonb Operators and JPQL/JPA Query vs NativeQuery Syntax</h1>
+<p>Some time ago I needed to write a method containing a query in a data access layer of a Java Spring codebase that would obtain a sum of values in a jsonb column grouped by a site id in a PostgreSQL database.</p>
+<p>This sounded very straightforward, so I was surprised when I repeatedly hit small syntax roadblocks due to my lack of knowledge about Java Persistence API (JPA) Queries, the difference between a Query and a NativeQuery, what Java Persistence Query Language (JPQL) supports, and casting.</p>
+<p>Let's say there's a table called Drafts that records information about these drafts of books and journals. There's authors, date created, date updated, and typical information like that. There's a jsonb column on it that contains more info that changes a lot or has to do with metadata.</p>
+<p>A jsonb (which stands for JSON Binary, probably) column in PostgreSQL stores JavaScript Object Notation (JSON, you know) data in a binary format that's slower to input because it needs to convert it from the text to the binary format, but faster to process since it's already in a parsed format.</p>
+<p>I think we use it because for those metadata changes, we don't need to update the table schema if we had to add more fields--we just slap it all in the jsonb column.</p>
+<p>Let's say the jsonb column has an entry &quot;size&quot; that gives how many bytes the draft is, kind of like pages in a book but in bytes for certain calculation reasons.</p>
+<p>These jsonb columns have their own special syntax for inputting data. Well, the first hurdle I smashed into was that JPQL doesn't support the jsonb arrow operator. In the file I was adding a method to, all the other methods were using Query and TypedQuery. They have a syntax that looks similar to SQL and makes use of the Java class that you've defined.</p>
+<p>For example, if the class is something like:</p>
+<pre><code>@Entity
+@Table
+public class Draft {
+  private UUID luid;
+  private Integer siteId;
+  private Date updatedAt;
+  private DraftProperties properties;
+}</code></pre>
+<p>A method that uses a Query to list out all of the drafts that haven't been updated since a certain time could be:</p>
+<pre><code>public List&lt;Draft&gt; listAllDraftsNotUpdatedSince(Instant time) {
+  TypedQuery&lt;Draft&gt; q = entityManager.createQuery(
+    &quot;SELECT d FROM Draft d &quot; +
+      &quot;WHERE d.updatedAt &lt; :time&quot;,
+    Draft.class);
+
+  q.setParameter(&quot;time&quot;, Date.from(time));
+  return q.getResultList();
+}</code></pre>
+<p>Note how the fields on that class are accessed like d.updatedAt, and it's in camelcase rather than what the PostgreSQL column would be, updated_at.</p>
+<p>When I wrote my query initially, I used that syntax with</p>
+<pre><code>SELECT siteId, COALESCE(SUM((properties-&gt;&gt;&#39;size&#39;)::bigint), 0) AS sizeInBytes
+FROM Draft d WHERE d.siteId in (:siteIds)
+GROUP BY d.siteId</code></pre>
+<p>and quickly found that this <code>-&gt;&gt;</code> gave me an error. That arrow operator is a PostgreSQL specific JSON operator so JPQL doesn't support it (it just supports the generic SQL dialect parts). So then I had to go to a native query instead.</p>
+<pre><code>SELECT site_id, COALESCE(SUM((properties-&gt;&gt;&#39;size&#39;)::bigint), 0) AS sizeInBytes
+FROM super_duper_drafts d WHERE d.site_id in (:siteIds)
+GROUP BY d.site_id</code></pre>
+<p>At this point there was one more minor problem--casting it to a bigint using the two semicolons required me to escape the semicolons because semicolons are used by JPA to indicate a named parameter prefix.</p>
+<pre><code>SELECT site_id, COALESCE(SUM((properties-&gt;&gt;&#39;size&#39;)\\:\\:bigint), 0) AS sizeInBytes
+FROM super_duper_drafts d WHERE d.site_id in (:siteIds)
+GROUP BY d.site_id</code></pre>
+<p>Cool. And finally I needed to execute this query, return a map containing an entry for each row returned, where the value in the first column would be the map key and the value in the second column would be the map value.</p>
+<pre><code>public Map&lt;Integer, Long&gt; getSizeInBytes(Set&lt;Integer&gt; siteIds) {
+        Query query = entityManager.createNativeQuery(
+            &quot;SELECT site_id, COALESCE(SUM((properties-&gt;&gt;&#39;size&#39;)\\:\\:bigint), 0) AS sizeInBytes &quot; +
+            &quot;FROM super_duper_drafts d &quot; +
+                &quot;WHERE d.site_id IN (:siteIds) &quot; +
+                &quot;GROUP BY d.site_id&quot;);
+
+        query.setParameter(&quot;siteIds&quot;, siteIds);
+        Map&lt;Integer, Long&gt; resultMap = new HashMap&lt;&gt;();
+
+        // In the real code this bit isn&#39;t located here
+        // but I&#39;ve placed it here for illustrative purposes
+        Function&lt;Object, Integer&gt; OBJECT_TO_INTEGER_FUNCTION =
+            obj -&gt; ((Number) obj).intValue();
+        Function&lt;Object, Long&gt; OBJECT_TO_LONG_FUNCTION =
+            obj -&gt; ((Number) obj).longValue();
+
+        for (Object result : query.getResultList()) {
+            Object[] row = (Object[]) result;
+            resultMap.put(OBJECT_TO_INTEGER_FUNCTION.apply(row[0]), OBJECT_TO_LONG_FUNCTION.apply(row[1]));
+        }
+
+        return resultMap;
+    }</code></pre>
+<p>So to recap:</p>
+<ol style="list-style-type: decimal">
+<li>Use native queries for database-specific operators like jsonb's arrow syntax.</li>
+<li>Escape semicolon characters in a native query due to named parameter prefix clash.</li>
+</ol>
+      </div>
+    </div>
+  </body>
+</html>
