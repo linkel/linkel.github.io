@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>VS Code Extension Development: Webview Context Menu API</title>
+    <meta name="description" content="VS Code Extension Development: Webview Context Menu API" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="VS Code Extension Development: Webview Context Menu API" />
+    <meta property="og:description" content="VS Code Extension Development: Webview Context Menu API" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+<h1 id="vs-code-extension-development-webview-context-menu-api">VS Code Extension Development: Webview Context Menu API</h1>
+<p>I've been working on a Visual Studio Code extension lately and one of the many handy features that Microsoft has provided is <a href="https://code.visualstudio.com/api/extension-guides/webview">Webviews</a>. Via the Webview API, you can show custom HTML, use React to render into the editor, or display anything else that fits in an editor panel's frame.</p>
+<p>Amusingly and classically, the feature set is constantly evolving faster than its documentation. This is both delightful and frustrating.</p>
+<h2 id="customizing-right-click-context-menu">Customizing Right-Click Context Menu</h2>
+<p>One quirk of webviews is that the right click context menu by default contains the trifecta Copy, Cut, and Paste, regardless of its usefulness in your webview. I might be showing a table full of cells of historical stock market data and the vanilla right click will show cut and paste--a potentially weird user experience to see on a table one doesn't expect to edit.</p>
+<p>Luckily in 2018 a <a href="https://github.com/microsoft/vscode/issues/54285">feature request</a> came in to allow extensions to contribute to the context menu in a webview.</p>
+<p>The 1.70 update of VS Code listed this proposed feature in its <a href="https://code.visualstudio.com/updates/v1_70#_webview-context-menus">release notes</a>. Proposed features aren't able to be published with the extension--they can only be used when distributed as a vsix. This was disappointing since I badly wanted to be able to leverage this feature.</p>
+<p>However, I noticed that contribWebviewContext didn't show up in autocomplete for proposed API features in the package.json. I did some code reading and saw that on September 9th, 2022 this feature was taken off the proposed API list and <a href="https://github.com/microsoft/vscode/pull/160561/files">finalized into the release</a>.</p>
+<p>That's awesome! Also a little frustrating that it wasn't announced anywhere in the next release, but Microsoft's VS Code team pumps out so much goodness that it's easy to lose track of all the moving parts.</p>
+<h2 id="how-to-use">How to Use</h2>
+<p>Into the contributes &gt; menus key of the VS Code extension's package.json, you fill in the new field &quot;webview/context&quot; and specify the command you have defined along with a when clause.</p>
+<pre><code>&quot;contributes&quot;: {
+  &quot;commands&quot;: [
+    {
+      &quot;command&quot;: &quot;myextension.copyCellContent&quot;,
+      &quot;title&quot;: &quot;Copy Cell Content&quot;,
+    },
+  ],
+  &quot;menus&quot;: {
+    &quot;webview/context&quot;: [
+      {
+        &quot;command&quot;: &quot;myextension.copyCellContent&quot;,
+        &quot;when&quot;: &quot;webviewSection == &#39;stock-table&#39;&quot;
+      },
+    ]
+  },
+}</code></pre>
+<p>I had a hell of a time trying to grab the correct context key for the when clause. For some reason the inspect context keys devtools command that can be brought up via CMD+SHIFT+P did not work when I was clicking on any of my webviews.</p>
+<p>Thank goodness the data-vscode-context data attribute worked, at least.</p>
+<p>Example of what could be rendered out of my React component:</p>
+<pre><code>&lt;div class=&quot;main&quot;&gt;
+  isLoading
+  ? &lt;LoadingSpinner /&gt;
+  :
+  &lt;div data-vscode-context=&#39;{&quot;webviewSection&quot;: &quot;stock-table&quot;, &quot;preventDefaultContextMenuItems&quot;: true}&#39;&gt;
+      &lt;MyTable results={result.rows} coolStuff={otherData.coolStuff}/&gt;
+  &lt;div/&gt;
+&lt;/div&gt;</code></pre>
+<p>By specifying the <code>webviewSection</code> field inside of that data attribute, I was able to have the <code>copyCellContent</code> command show up in the right click menu, without showing the generic Cut, Copy, Paste commands.</p>
+<p>On my table component, I had some logic where the selected cell's values would be saved into the state somewhere and executing the <code>copyCellContent</code> command used VS Code's clipboard API like so: <code>vscode.env.clipboard.writeText(cellValue);</code></p>
+<h2 id="hiding-commands-from-the-command-palette">Hiding Commands From the Command Palette</h2>
+<p>Good stuff. For an added bonus, any command listed under the contributes field will show up in the Command Palette (CMD+SHIFT+P or CTRL+SHIFT+P) by default, so if you want to hide the command from showing in the palette, you can add:</p>
+<pre><code>&quot;menus&quot;: {
+  &quot;commandPalette&quot;: [
+    {
+      &quot;command&quot;: &quot;myextension.copyToClipboard&quot;,
+      &quot;when&quot;: &quot;false&quot;
+    }
+  ],</code></pre>
+      </div>
+    </div>
+  </body>
+</html>

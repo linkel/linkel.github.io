@@ -129,7 +129,12 @@ table {
 
 /* Variables */
 
-/* After Reset, global styles */
+:root {
+  --link-color: #cc6600;
+  --link-hover-color: #5d3914
+}
+
+/* End of Reset, global styles */
 
 * {
   box-sizing: border-box;
@@ -290,7 +295,7 @@ header nav a {
   flex-direction: column;
   width: 100%; /* Switch this back to 50% if I want to have an image on the left for the banner */
   justify-content: space-between;
-  border-bottom: 5px solid #cc6600;
+  border-bottom: 5px solid var(--link-color);
 }
 
 @media (max-width: 500px) {
@@ -301,12 +306,12 @@ header nav a {
 }
 
 @media (max-width: 500px) {
-  .banner .rightside .bannerTEXT {
+  .banner .rightside .banner-text {
     margin: 30px 0 30px 0;
   }
 }
 
-.banner .rightside .bannerTEXT h3 a {
+.banner .rightside .banner-text h3 a {
   font-family: 'raleway';
   color: white;
   background: black;
@@ -316,7 +321,7 @@ header nav a {
   margin-top: 5px;
 }
 
-.banner .rightside .bannerTEXT h3 a:hover {
+.banner .rightside .banner-text h3 a:hover {
   color: black;
   background: #ec7600;
   transition: 0.1s;
@@ -622,7 +627,7 @@ pre {
 }
 
 .blog-body a:hover {
-  color: #cc6600;
+  color: var(--link-color);
   transition: 0.1s ease-in-out;
 }
 
@@ -674,7 +679,7 @@ pre {
 }
 
 .blog-body .read-more {
-  color: #cc6600;
+  color: var(--link-color);
   line-height: 3;
 }
 
@@ -685,7 +690,7 @@ pre {
 }
 
 .blog-body .read-more:hover {
-  color: rgb(0, 0, 0);
+  color: var(--link-hover-color);
   transition: 0.1s ease-in-out;
 }
 
@@ -702,4 +707,12 @@ li {
 
 ul {
   list-style-type: circle;
+}
+
+p > a {
+  color: var(--link-color)
+}
+
+.blog-body > p > a:hover {
+  color: var(--link-hover-color)
 }

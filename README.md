@@ -2,15 +2,11 @@
 
 Having a personal website is interesting. It feels simultaneously like too much work yet also not much work at all. When I sit down and get started with something on the site, I find that time passes pretty quickly. But it's difficult in the first place to get started with changes. 
 
-To my horror, I discovered recently that I have forgotten about my LESS file when revamping the site and adding blog articles, and instead have been making edits to the CSS file. I'm going to have to refactor this...
-
 # To Do:
-* [ ] Maybe a redesign? 
 * [ ] Perhaps a page on powerlifting, climbing, fitness
 * [ ] Maybe a page about birds?
 * [ ] Book Review page!
-* [ ] Refactor the CSS!
-* [x] How can I automate the pandoc conversion more and slap my headers on easily?
+* [x] Semi-automate pandoc conversion via template and bash script  
 
 # Notes to Self
 
