@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>How to Add Custom Songs to Beat Saber on Quest 2</title>
+    <meta name="description" content="How to Add Custom Songs to Beat Saber on Quest 2" />
+    <meta name="author" content="Kelly Lin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="How to Add Custom Songs to Beat Saber on Quest 2" />
+    <meta property="og:description" content="How to Add Custom Songs to Beat Saber on Quest 2" />
+    <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
+    <meta property="og:url" content="http://kellylin.me" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <a href="../index.html"><img src="../images/logo.png"/></a>
+        </div>
+        <nav class="link-brackets">
+          <a href="../blog.html">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <!--<a href="">Writing</a>-->
+          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+        </nav>
+      </header>
+      <div class="blog-body">
+<h1 id="how-to-play-beat-saber-on-quest-2-with-custom-songs">How to Play Beat Saber on Quest 2 With Custom Songs</h1>
+<p>I'll lay out the steps I took first then elaborate on them.</p>
+<h2 id="steps">Steps</h2>
+<ol style="list-style-type: decimal">
+<li>Download Sidequest for Windows. Get the PC version, not the sideload one.</li>
+<li>Sign up as a developer on your Oculus profile page. This requires a credit card.<br />
+</li>
+<li>Create a developer organization on your profile page.</li>
+<li>Enable Developer Mode on the Quest via the Meta Quest app.</li>
+<li>Open the Beat Saber app at least once before this process.</li>
+<li>Uninstall your up-to-date Beat Saber (for me this was 1.24.0. You can see it by looking at the right footprint at the bottom of the screen).</li>
+<li>Download the .APK file for a mod-compatible Beat Saber from oculusdb.rui2015.me. I downloaded version 1.24.0.</li>
+<li>Install the .APK file.</li>
+<li>Download BMBF.</li>
+<li>Run BMBF and follow the app's instructions closely.</li>
+</ol>
+<h2 id="sidequest">Sidequest</h2>
+<p>Advanced installer download link is at <a href="https://sidequestvr.com/setup-howto">SideQuest VR</a>.</p>
+<p>Sidequest is an app store for VR games that has apps and games that may be works in progress by developers. The Sidequest app allows installation and management of .APK files. You'll want this so that you can download BMBF.</p>
+<h2 id="sign-up-as-a-developer">Sign up as a developer</h2>
+<p>I logged in to my Oculus profile and navigated to the page that let me register as a developer. I am pretty sure a credit card is required--there was also a 2FA option, but I just went for the credit card. There is no charge to set up an organization. It's for if you do, down the line, buy something or subscribe to something.</p>
+<p>Here is the <a href="https://developer.oculus.com/manage/verify">Oculus profile management link</a>.</p>
+<h2 id="create-an-organization">Create an organization</h2>
+<p>Find the page that lets you create an organization. Give it whatever name you want.</p>
+<h2 id="enable-dev-mode">Enable dev mode</h2>
+<p>I found developer mode under Menu &gt; Devices &gt; Headset Settings &gt; Developer Mode within the Meta Quest 2 app that I had initially downloaded to set up the headset.</p>
+<h2 id="bmbf">BMBF</h2>
+<p>BMBF is the main mod management tool for Beat Saber. It will patch the game when you run it to make it work with custom songs. As of the time of this writing I knew I wanted Beat Saber 1.24.0 and that BMBF had support for that version. <a href="https://computerelite.github.io/tools/Beat_Saber/questmods.html">This site</a> lets you check the compatibility of the mods with each version of Beat Saber.</p>
+<p>I didn't need any other popular mods other than what let me play Custom Songs, so that's why I went with 1.24.0.</p>
+<p>The download link for BMBF on Sidequest is <a href="https://sidequestvr.com/app/747">here</a>.</p>
+<h2 id="uninstall-beat-saber-and-install-old-version-downgrade">Uninstall Beat Saber and install old version (Downgrade)</h2>
+<p>Beat Saber shows the current version when you're ingame looking straight down at the right footprint from the main screen. If it's newer than the version that is compatible with mods, you'll have to uninstall it in order to install an older version.</p>
+<p><a href="https://oculusdb.rui2015.me/id/2448060205267927">This site</a> lets you download the older versions after logging in to Oculus. It's not an Oculus-affiliated site, but it uses their APIs. This does mean maybe there could be security vulnerabilities in the future if the site owner became malicious but it's probably fine for now.</p>
+<p>It isn't always up, which means that it might be good to save some copies of .APKs you think you'd like in the future for your own archival.</p>
+<p>I do have 1.24.0 with me so if you have a verified Oculus developer account and need the APK I'm happy to distribute.</p>
+<p>Installation of the old version can be done through Sidequest. Definitely feel free to look at Sidequest's instructions online too--they're very good and have video and screenshots, unlike this post of mine.</p>
+<h2 id="installing-bmbf">Installing BMBF</h2>
+<p>BMBF has some instructions as it goes through with the patching process. It may be good to jot them down.</p>
+<p>Initially it showed a white screen for me that went away either with clicking into it or waiting long enough. If it says process not responding, choose to wait for it, don't cancel. Don't launch the app immediately after install when the popup shows--let the whole patching process complete then launch Beat Saber from the home/apps page from in the Quest.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The process was a little complicated because of misinformation online. People who have PCVR like the Rift have fewer steps to do, folks with standalone VR like the Quest 2 have to use a loader like Sidequest to get all the goodies on their headset. There were some videos that I thought were very informative but also some videos that were very out of date or clickbaity. The <a href="https://bslegacy.com/">Beat Saber Legacy Group website</a> and Discord server had a lot of helpful links to those videos and guides.</p>
+<p>The version numbers I mention in this post may not be accurate as time goes on. At the least, the version of BMBF I downloaded in Nov 2022 was compatible with version 1.24.0 of Beat Saber. The BMBF website itself, bmbf.dev, seems to be having an ongoing outage this month.</p>
+<p>Beat Saber with custom songs is really fun! When a song is mapped really well, the experience can feel epic, emotional, and flowy. Tentatively would recommend. I'll see if I am still playing it next year.</p>
+      </div>
+    </div>
+  </body>
+</html>
