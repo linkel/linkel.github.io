@@ -1,50 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <!-- Thanks for checking my source out. Have a great day! -->
     <meta charset="utf-8" />
     <title>SQL Server GUID Sort Order</title>
     <meta name="description" content="SQL Server GUID Sort Order" />
     <meta name="author" content="Kelly Lin" />
-    <meta
-      name="keywords"
-      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
-    />
+    <meta name="keywords" content="Kelly, Kelly Lin, R&amp;D, Programming, Software Development, Software Engineering" />
     <meta property="og:title" content="SQL Server GUID Sort Order" />
     <meta property="og:description" content="SQL Server GUID Sort Order" />
     <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
     <meta property="og:url" content="http://kellylin.me" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-      crossorigin="anonymous"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="../css/index.css" />
     <link rel="icon" type="image/png" href="../images/logo.png" />
-    <link
-      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <script src="../js/theme.js"></script>
   </head>
-
   <body>
     <div class="container">
-      <header>
-        <div class="logo">
-          <a href="../index.html"><img src="../images/logo.png"/></a>
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="../index.html"><img src="../images/logo.png" alt="Kelly Lin" /></a>
         </div>
-        <nav class="link-brackets">
-          <a href="../blog.html">Blog</a>
+        <nav>
+          <a href="../index.html">About</a>
+          <a href="../blog.html" class="active">Blog</a>
           <a href="../talks.html">Talks</a>
-          <!--<a href="">Writing</a>-->
-          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
         </nav>
-      </header>
-      <div class="blog-body">
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+          <div class="gutter-line">9</div>
+          <div class="gutter-line">10</div>
+        </div>
+
+        <div class="content-area">
+          <div class="blog-body fade-in">
 <h1 id="sql-server-guid-sort-order">SQL Server GUID Sort Order</h1>
 <p>An old coworker reminded me about the time SQL Server was sorting GUIDs (uniqueidentifiers) completely against my intuition.</p>
 <p>I vaguely recall that we were looking at the &quot;default&quot; sort order of a table that had a GUID as a primary key, without providing an ORDER BY clause. Without an ORDER BY clause, there is no order guaranteed. But, in some cases it just so happens that when you query it, the data comes back &quot;sorted&quot; by the primary key. This is probably because in MSSQL when you create a primary key for a table, a clustered index also gets created if there isn't an existing one, and a clustered index determines the physical order of the rows in the table. So it's just by chance that SQL Server decides that returning the results following the physical order of the rows performs well. It is not guaranteed that you'd get this order every time.</p>
@@ -103,6 +111,8 @@ ffffffff-3eee-dddd-cccc-3bbbbbbbbbbb
 <p>Witness the delicious clarity of the final byte group right-to-left most significant digit ordering in the last 6 entries.</p>
 <p>In conclusion, if you ever need to ORDER BY uniqueidentifiers, you can do it and it will be consistent. Just remember that it'll differ from the typical sort order!</p>
 <p>5 &quot;byte groups&quot;, delimited by a dash. The significance of the byte groups goes from right to left. The first three (counting from the left) byte groups have significance within the group in left to right order, and the last two byte groups have significance from right to left order.</p>
+          </div>
+        </div>
       </div>
     </div>
   </body>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <!-- Thanks for checking my source out. Have a great day! -->
     <meta charset="utf-8" />
-    <title>Kelly Lin</title>
+    <title>Kelly Lin: Talks</title>
     <meta name="description" content="From pharma to programming." />
     <meta name="author" content="Kelly Lin" />
     <meta
@@ -17,46 +17,66 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/index.css" />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <link
-      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/theme.js"></script>
   </head>
 
   <body>
     <div class="container">
-      <header>
-        <div class="logo">
-          <a href="./index.html"><img src="images/logo.png"/></a>
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="./index.html"><img src="images/logo.png" alt="Kelly Lin" /></a>
         </div>
-        <nav class="link-brackets">
+        <nav>
+          <a href="./index.html">About</a>
           <a href="./blog.html">Blog</a>
-          <!-- <a href="./projects.html">Projects</a>  -->
-          <a href="./talks.html">Talks</a>
-          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
+          <a href="./talks.html" class="active">Talks</a>
         </nav>
-      </header>
-      <div>
-            <div class="bodytext-talks">
-                    <div class="aboutme">
-                      <h2>Presentations and Talks</h2>
-                      <p>
-                        I very much enjoyed attending the San Diego Python User Group meetups, especially the Saturday meetups at UCSD's Geisel Library. In March 2019, I gave a talk at the Python monthly meeting at Qualcomm's Building AZ on my transition 
-                        from chemistry into software engineering. 
-                      </p>
-                      <br>
-                      <p>The slides for the lightning talk I gave on March 28th, 2019 can be found here:</p>
-                      <br>
-                      <p>From Chemist to Software Engineer in 5 Months<a class="regular-links" href="./files/Chemist_to_Software_Engineer.pdf">PDF</a><a class="regular-links" href="./files/Chemist_to_Software_Engineer.odp">ODP</a></p>
-                      
-                      <br>
-                      
-                    </div>
-                  </div>
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
       </div>
+
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+        </div>
+
+        <div class="content-area">
+          <section class="page-body fade-in">
+            <h2>Presentations and Talks</h2>
+            <p>
+              I very much enjoyed attending the San Diego Python User Group meetups, especially the Saturday meetups at UCSD's Geisel Library. In March 2019, I gave a talk at the Python monthly meeting at Qualcomm's Building AZ on my transition
+              from chemistry into software engineering.
+            </p>
+            <p>The slides for the lightning talk I gave on March 28th, 2019 can be found here:</p>
+            <p>
+              From Chemist to Software Engineer in 5 Months
+              <a class="regular-links" href="./files/Chemist_to_Software_Engineer.pdf">PDF</a>
+              <a class="regular-links" href="./files/Chemist_to_Software_Engineer.odp">ODP</a>
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -1,49 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <!-- Thanks for checking my source out. Have a great day! -->
     <meta charset="utf-8" />
     <title>Checkboxes and Angular Reactive Forms Browser Discrepancy</title>
     <meta name="description" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
     <meta name="author" content="Kelly Lin" />
-    <meta
-      name="keywords"
-      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
-    />
+    <meta name="keywords" content="Kelly, Kelly Lin, R&amp;D, Programming, Software Development, Software Engineering" />
     <meta property="og:title" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
     <meta property="og:description" content="Checkboxes and Angular Reactive Forms Browser Discrepancy" />
     <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
     <meta property="og:url" content="http://kellylin.me" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-      crossorigin="anonymous"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="../css/index.css" />
     <link rel="icon" type="image/png" href="../images/logo.png" />
-    <link
-      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <script src="../js/theme.js"></script>
   </head>
-
   <body>
     <div class="container">
-      <header>
-        <div class="logo">
-          <a href="../index.html"><img src="../images/logo.png"/></a>
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="../index.html"><img src="../images/logo.png" alt="Kelly Lin" /></a>
         </div>
-        <nav class="link-brackets">
-          <a href="../blog.html">Blog</a>
+        <nav>
+          <a href="../index.html">About</a>
+          <a href="../blog.html" class="active">Blog</a>
           <a href="../talks.html">Talks</a>
         </nav>
-      </header>
-      <div class="blog-body">
-        <h1 id="browser-behavior-discrepancy-on-checkboxes-in-angular-reactive-forms">Browser Behavior Discrepancy on Checkboxes in Angular Reactive Forms</h1>
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+          <div class="gutter-line">9</div>
+          <div class="gutter-line">10</div>
+        </div>
+
+        <div class="content-area">
+          <div class="blog-body fade-in">
+<h1 id="browser-behavior-discrepancy-on-checkboxes-in-angular-reactive-forms">Browser Behavior Discrepancy on Checkboxes in Angular Reactive Forms</h1>
 <p>Chrome and Firefox versus IE and Edge.</p>
 <p>I noticed a discrepancy on how these browsers treat checkboxes when using Angular's reactive forms.</p>
 <p>I had a form, inside which was a label linked to a checkbox input. The starting state of the checkbox was checked. There was an input number box that would be disabled if the checkbox was checked, and when the checkbox was unchecked, it would be enabled. I also had two icons--a checked and an unchecked icon that would display based on the Angular form value.</p>
@@ -108,5 +118,9 @@ False     |  { id: LibraryKey.Awesome, awesomeValue: &#39;0&#39;}
         this.writeValue(newValue);
     }</code></pre>
 <p>Now we have the desired functionality, with a much less hackier-looking fix.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

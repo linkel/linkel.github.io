@@ -1,51 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <!-- Thanks for checking my source out. Have a great day! -->
     <meta charset="utf-8" />
     <title>Method to the Madness Behind CSS</title>
     <meta name="description" content="Method to the Madness Behind CSS" />
     <meta name="author" content="Kelly Lin" />
-    <meta
-      name="keywords"
-      content="Kelly, Kelly Lin, R&D, Programming, Software Development, Software Engineering"
-    />
+    <meta name="keywords" content="Kelly, Kelly Lin, R&amp;D, Programming, Software Development, Software Engineering" />
     <meta property="og:title" content="Method to the Madness Behind CSS" />
     <meta property="og:description" content="Method to the Madness Behind CSS" />
     <meta property="og:image" content="http://kellylin.me/images/logo.jpg" />
     <meta property="og:url" content="http://kellylin.me" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-      crossorigin="anonymous"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="../css/index.css" />
     <link rel="icon" type="image/png" href="../images/logo.png" />
-    <link
-      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <script src="../js/theme.js"></script>
   </head>
-
   <body>
     <div class="container">
-      <header>
-        <div class="logo">
-          <a href="../index.html"><img src="../images/logo.png"/></a>
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="../index.html"><img src="../images/logo.png" alt="Kelly Lin" /></a>
         </div>
-        <nav class="link-brackets">
-          <a href="../blog.html">Blog</a>
+        <nav>
+          <a href="../index.html">About</a>
+          <a href="../blog.html" class="active">Blog</a>
           <a href="../talks.html">Talks</a>
-          <!--<a href="">Writing</a>-->
-          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
         </nav>
-      </header>
-      <div class="blog-body">
-          <h1 id="theres-method-to-the-madness-behind-css">There's Method To the Madness Behind CSS</h1>
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+          <div class="gutter-line">9</div>
+          <div class="gutter-line">10</div>
+        </div>
+
+        <div class="content-area">
+          <div class="blog-body fade-in">
+<h1 id="theres-method-to-the-madness-behind-css">There's Method To the Madness Behind CSS</h1>
           <p>I made a new Angular component whose SCSS file ended up looking like so:</p>
           <pre><code>.super-button {
           
@@ -126,6 +134,8 @@
           </ol>
           <p>Second, anything that seems unreasonable or insane in CSS is often just me not knowing the peculiarities of CSS sufficiently. It's therapeutic to throw my hands up and bemoan how illogical CSS looks, but I should keep in mind that most of the time it's a failure of understanding on my end. CSS is a many-tentacled beast because it's had to support a lot over the decades that it's existed. I'm merely a few years older than CSS myself.</p>
           <p>That said, there's certainly times when libraries like Bootstrap, etc. will inadvertently clash with what a developer is trying to do due to naming or use of !important. In conclusion--it's complicated.</p>
+          </div>
+        </div>
       </div>
     </div>
   </body>

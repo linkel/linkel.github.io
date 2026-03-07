@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <!-- Thanks for checking my source out. Have a great day! -->
     <meta charset="utf-8" />
@@ -16,6 +16,17 @@
     <meta property="og:url" content="http://kellylin.me" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
@@ -24,368 +35,176 @@
     />
     <link rel="stylesheet" href="css/index.css" />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <link
-      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <script src="js/theme.js"></script>
   </head>
 
   <body>
     <div class="container">
-      <header>
-        <div class="logo">
-          <a href="./index.html"><img src="images/logo.png" /></a>
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="./index.html"><img src="images/logo.png" alt="Kelly Lin" /></a>
         </div>
-        <nav class="link-brackets">
-          <a href="">Blog</a>
+        <nav>
+          <a href="./index.html">About</a>
+          <a href="./blog.html" class="active">Blog</a>
           <a href="./talks.html">Talks</a>
-          <!--<a href="">Writing</a>-->
-          <!--<a href="http://kellylin.me/portfolio">Portfolio</a>-->
         </nav>
-      </header>
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
+      </div>
 
-      <div class="blog-body">
-        <div class="blog-post">
-          <div class="tiny">Dec 16, 2023</div>
-          <a href="./blog/the_pleasure_of_peripherals.html"
-            ><h3>The Pleasure of Peripherals: Mice</h3></a
-          >
-          <p>
-            The amount of enjoyment I get from using my new mouse is unreal. Had
-            been using my Logitech G502 ever since it came out in 2014. Last
-            month I decided it was time for an upgrade.
-            <br />
-            <a href="./blog/the_pleasure_of_peripherals.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">Nov 27, 2022</div>
-          <a href="./blog/nov-2022-beat-saber-custom-songs.html"
-            ><h3>
-              How to Play Custom Songs on Beat Saber on the Meta Quest 2
-            </h3></a
-          >
-          <p>
-            I recently bought the Quest 2 on sale and wanted to play Beat Saber
-            with custom songs. The Quest 2 is a standalone VR headset, so there
-            are a few extra steps to take. Here's what I did to mod the game.
-            <br />
-            <a
-              href="./blog/nov-2022-beat-saber-custom-songs.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">Nov 5, 2022</div>
-          <a href="./blog/vscode_api_webview_context.html"
-            ><h3>VS Code Extension Development: Webview Context Menu API</h3></a
-          >
-          <p>
-            Wanted to replace the default right-click context menu options in a
-            VS Code Webview with custom ones. Also wanted to hide a command from
-            being shown in the command palette. Used a freshly-finalized VS Code
-            API to solve my problem.
-            <br />
-            <a href="./blog/vscode_api_webview_context.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">Jan 8, 2022</div>
-          <a href="./blog/postgresql_jsonb_operators_jpql_jpa_query_syntax.html"
-            ><h3>PostgreSQL Jsonb Operators and JPQL/JPA Query Syntax</h3></a
-          >
-          <p>
-            Trying to write a simple query for a data access layer in Java
-            Spring involving PostgreSQL's jsonb data format. Finding out that
-            Java Persistence Query Language doesn't support the jsonb arrow
-            operator (and other database-specific operators). What I had to do
-            instead.
-            <br />
-            <a
-              href="./blog/postgresql_jsonb_operators_jpql_jpa_query_syntax.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">Dec 31, 2021</div>
-          <a href="./blog/win10-start-menu-disappears-live-tile-fix.html"
-            ><h3>Windows 10 Start Menu Won't Stay Open</h3></a
-          >
-          <p>
-            My Windows 10 Start Menu wouldn't stay open after I clicked on it.
-            It'd open briefly and immediately disappear. I was still able to
-            search for applications if I typed quickly, but couldn't use the UI
-            to shut down my PC. In my case, it turned out to be because of Live
-            Tiles! Here's how I fixed it.
-            <br />
-            <a
-              href="./blog/win10-start-menu-disappears-live-tile-fix.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">March 7, 2021</div>
-          <a href="./blog/SQL-Server-GUID-Sort-Order.html"
-            ><h3>SQL Server GUID Sort Order</h3></a
-          >
-          <p>
-            Did you know that uniqueidentifiers in MSSQL have their own special
-            sort order? An old coworker reminded me of the time we found this
-            out.
-            <br />
-            <a href="./blog/SQL-Server-GUID-Sort-Order.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">June 28, 2020</div>
-          <a href="./blog/using_cypress_for_the_first_time.html"
-            ><h3>Using Cypress For the First Time</h3></a
-          >
-          <p>
-            Cypress seems pretty useful for e2e and integration testing. I also
-            found that cy.server() didn't work quite the way I expected.
-            <br />
-            <a
-              href="./blog/using_cypress_for_the_first_time.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">May 11, 2020</div>
-          <a href="./blog/invalid_react_hook_enzyme.html"
-            ><h3>Invalid React Hook Call With Enzyme Tests</h3></a
-          >
-          <p>
-            Added some React Hooks to a component and caused some unit test
-            failures.
-            <br />
-            <a href="./blog/invalid_react_hook_enzyme.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">October 31, 2019</div>
-          <a href="./blog/simple_asynchronous_mistake_integration_test.html"
-            ><h3>Simple Asynchronous Mistake In An Integration Test</h3></a
-          >
-          <p>
-            Writing up some quick integration tests for a queue consumer service
-            and was briefly baffled when the test was failing. A simple and
-            obvious error.
-            <br />
-            <a
-              href="./blog/simple_asynchronous_mistake_integration_test.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">October 30, 2019</div>
-          <a href="./blog/database_permissions_scripting_var_mistake.html"
-            ><h3>Database Permissions: A Scripting Variable Mistake</h3></a
-          >
-          <p>
-            Setting up a new user role for a brand new .NET Core service to
-            grant it database permissions to execute some stored procedures.
-            When I deployed, I saw an error in the logs. I had forgotten
-            something.
-            <br />
-            <a
-              href="./blog/database_permissions_scripting_var_mistake.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">October 20, 2019</div>
-          <a href="./blog/execution_timeout.html"
-            ><h3>Execution Timeout Error from the Database</h3></a
-          >
-          <p>
-            A search request on the frontend was failing due to an execution
-            timeout error from the database. A stored procedure had to be
-            rewritten to address this.
-            <br />
-            <a href="./blog/execution_timeout.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">August 28, 2019</div>
-          <a href="./blog/weighing_options_for_fixing_angular_menu_css_bug.html"
-            ><h3>Weighing Options for Fixing an Angular Menu CSS Bug</h3></a
-          >
-          <p>
-            I had a simple visual bug. But due to the changing expectations
-            surrounding what interacted with it, I had to evaluate several
-            options for fixing it.
-            <br />
-            <a
-              href="./blog/weighing_options_for_fixing_angular_menu_css_bug.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">July 15, 2019</div>
-          <a href="./blog/SQL_Query_using_aggregation_and_count.html"
-            ><h3>
-              How many SQL records are associated with more than one of another
-              record type?
-            </h3></a
-          >
-          <p>
-            I want to know how many records are associated with more than one of
-            another record type across four 3NF normalized tables?
-            <br />
-            <a
-              href="./blog/SQL_Query_using_aggregation_and_count.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">July 8, 2019</div>
-          <a href="./blog/npm_err_notarget_nexus_repo.html"
-            ><h3>npm ERR! notarget When Using a Nexus Repository</h3></a
-          >
-          <p>
-            Had a fun error when I tried to build a project after changing a
-            tiny line that should not have caused any issues. npm ERR! code
-            ETARGET.
-            <br />
-            <a href="./blog/npm_err_notarget_nexus_repo.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-        <div class="blog-post">
-          <div class="tiny">July 1, 2019</div>
-          <a href="./blog/checkboxes-and-angular-forms-browser-discrepancy.html"
-            ><h3>
-              Checkboxes and Angular Reactive Forms Browser Discrepancy
-            </h3></a
-          >
-          <p>
-            Noticed when using Angular's reactive forms with my checkboxes that
-            had labels and icons that were dependent on the form value that
-            there was a discrepancy between how IE/Edge treated them versus
-            Chrome/Firefox.
-            <br />
-            <a
-              href="./blog/checkboxes-and-angular-forms-browser-discrepancy.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+          <div class="gutter-line">9</div>
+          <div class="gutter-line">10</div>
+          <div class="gutter-line">11</div>
+          <div class="gutter-line">12</div>
+          <div class="gutter-line">13</div>
+          <div class="gutter-line">14</div>
+          <div class="gutter-line">15</div>
         </div>
 
-        <div class="blog-post">
-          <div class="tiny">Jun 17, 2019</div>
-          <a
-            href="./blog/conditionally_styling_Angular_components_and_host_elements.html"
-            ><h3>
-              Conditionally Styling Angular Components and Host Elements
-            </h3></a
-          >
-          <p>
-            Here's how you can conditionally set a style value depending on a
-            property, and how to conditionally set a style on a host element.
-            <br />
-            <a
-              href="./blog/conditionally_styling_Angular_components_and_host_elements.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
+        <div class="content-area">
+          <h1 class="fade-in">Blog</h1>
 
-        <div class="blog-post">
-          <div class="tiny">May 6, 2019</div>
-          <a href="./blog/group_by_in_LINQ.html"
-            ><h3>Group By in LINQ to Turn Flat Rows Into Nested Rows</h3></a
-          >
-          <p>
-            Needed to transform some flat rows from a database into nested
-            objects in a C# backend, so I made use of LINQ. LINQ is short for
-            Language-Integrated Query, a neat C# tech.
-            <br />
-            <a href="./blog/group_by_in_LINQ.html" class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-
-        <div class="blog-post">
-          <div class="tiny">April 29, 2019</div>
-          <a href="./blog/method_in_the_madness_behind_css.html"
-            ><h3>There Is Method To The Madness Behind CSS</h3></a
-          >
-          <p>
-            A lesson in having patience to understand what is going on during
-            CSS troubleshooting. It's not you, CSS, it's me.
-            <br />
-            <a
-              href="./blog/method_in_the_madness_behind_css.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-
-        <div class="blog-post">
-          <div class="tiny">April 22, 2019</div>
-          <a
-            href="./blog/daylight_savings_bug_and_check_your_network_requests.html"
-            ><h3>Daylight Savings Bug, and Check Your Network Requests</h3></a
-          >
-          <p>
-            Troubleshooting a bug on a datepicker component that had to do with
-            daylight savings. Another reminder to check network requests.
-            <br />
-            <a
-              href="./blog/daylight_savings_bug_and_check_your_network_requests.html"
-              class="read-more"
-              >Read More</a
-            >
-          </p>
-        </div>
-
-        <div class="blog-post">
-          <div class="tiny">April 15, 2019</div>
-          <a href="./blog/check_your_helper_fns.html"
-            ><h3>Remember To Check Your Helper Functions</h3></a
-          >
-          <p>
-            Forgetting to check my helper functions left me debugging a problem
-            longer than it should have taken. Here, I show an example of an
-            incident in the form of a hypothetical application.
-            <br />
-            <a href="./blog/check_your_helper_fns.html" class="read-more"
-              >Read More</a
-            >
-          </p>
+          <ul class="blog-list fade-in">
+            <li>
+              <a href="./blog/the_pleasure_of_peripherals.html" class="blog-entry">
+                <span class="post-title">The Pleasure of Peripherals: Mice</span>
+                <span class="post-date">2023-12-16</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/nov-2022-beat-saber-custom-songs.html" class="blog-entry">
+                <span class="post-title">How to Play Custom Songs on Beat Saber on the Meta Quest 2</span>
+                <span class="post-date">2022-11-27</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/vscode_api_webview_context.html" class="blog-entry">
+                <span class="post-title">VS Code Extension API: Webview Context</span>
+                <span class="post-date">2022-09-11</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/checkboxes-and-angular-forms-browser-discrepancy.html" class="blog-entry">
+                <span class="post-title">Checkboxes and Angular Forms Browser Discrepancy</span>
+                <span class="post-date">2021-11-21</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/conditionally_styling_Angular_components_and_host_elements.html" class="blog-entry">
+                <span class="post-title">Conditionally Styling Angular Components and Host Elements</span>
+                <span class="post-date">2021-07-19</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/weighing_options_for_fixing_angular_menu_css_bug.html" class="blog-entry">
+                <span class="post-title">Weighing Options for Fixing an Angular Menu CSS Bug</span>
+                <span class="post-date">2021-07-05</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/check_your_helper_fns.html" class="blog-entry">
+                <span class="post-title">Check Your Helper Functions</span>
+                <span class="post-date">2021-06-21</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/daylight_savings_bug_and_check_your_network_requests.html" class="blog-entry">
+                <span class="post-title">Daylight Savings Bug and Check Your Network Requests</span>
+                <span class="post-date">2021-03-16</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/npm_err_notarget_nexus_repo.html" class="blog-entry">
+                <span class="post-title">npm ERR! notarget Nexus Repo</span>
+                <span class="post-date">2021-02-04</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/using_cypress_for_the_first_time.html" class="blog-entry">
+                <span class="post-title">Using Cypress for the First Time</span>
+                <span class="post-date">2021-01-31</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/invalid_react_hook_enzyme.html" class="blog-entry">
+                <span class="post-title">Invalid React Hook and Enzyme</span>
+                <span class="post-date">2020-09-06</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/method_in_the_madness_behind_css.html" class="blog-entry">
+                <span class="post-title">Method in the Madness Behind CSS</span>
+                <span class="post-date">2020-08-23</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/initial_impressions_of_my_first_dev_job.html" class="blog-entry">
+                <span class="post-title">Initial Impressions of My First Dev Job</span>
+                <span class="post-date">2019-10-27</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/win10-start-menu-disappears-live-tile-fix.html" class="blog-entry">
+                <span class="post-title">Win10 Start Menu Disappears Live Tile Fix</span>
+                <span class="post-date">2019-10-14</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/postgresql_jsonb_operators_jpql_jpa_query_syntax.html" class="blog-entry">
+                <span class="post-title">PostgreSQL JSONB Operators JPQL JPA Query Syntax</span>
+                <span class="post-date">2019-09-25</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/simple_asynchronous_mistake_integration_test.html" class="blog-entry">
+                <span class="post-title">Simple Asynchronous Mistake in Integration Test</span>
+                <span class="post-date">2019-08-17</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/execution_timeout.html" class="blog-entry">
+                <span class="post-title">Execution Timeout</span>
+                <span class="post-date">2019-08-04</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/database_permissions_scripting_var_mistake.html" class="blog-entry">
+                <span class="post-title">Database Permissions Scripting Variable Mistake</span>
+                <span class="post-date">2019-07-25</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/SQL-Server-GUID-Sort-Order.html" class="blog-entry">
+                <span class="post-title">SQL Server GUID Sort Order</span>
+                <span class="post-date">2019-07-13</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/SQL_Query_using_aggregation_and_count.html" class="blog-entry">
+                <span class="post-title">SQL Query Using Aggregation and Count</span>
+                <span class="post-date">2019-07-08</span>
+              </a>
+            </li>
+            <li>
+              <a href="./blog/group_by_in_LINQ.html" class="blog-entry">
+                <span class="post-title">Group By in LINQ</span>
+                <span class="post-date">2019-07-03</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
