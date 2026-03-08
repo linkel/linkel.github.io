@@ -1,34 +1,98 @@
-# Introduction
+# Personal Website
 
-Having a personal website is interesting. It feels simultaneously like too much work yet also not much work at all. When I sit down and get started with something on the site, I find that time passes pretty quickly. But it's difficult in the first place to get started with changes.
+## To Do
 
-# To Do:
-
-- [ ] Perhaps a page on powerlifting, climbing, fitness
-- [ ] Maybe a page about birds?
-- [ ] Book Review page!
+- [ ] Book Review / reading page
+- [ ] Career timeline on the About page
 - [ ] Maybe a page about purchases I've made that I really like?
+- [ ] Write a new blog post
+- [x] Redesign site (Editor Surface theme, light/dark mode)
+- [x] Restructure landing page
+- [x] Move bio content to /about
 - [x] Semi-automate pandoc conversion via template and bash script
 
-# Notes to Self
+## Publishing a Blog Post
 
-## Script Instructions
+Instructions for myself in case I forget. 
 
-I wrote a script in this folder that I titled [md_to_html](md_to_html.sh) which runs pandoc and sed to convert from md to html, format my html headers, and stick the written content into the template. Should make it a lot easier to write articles and not worry about the manual html copy-pasting afterwards.
+### Prerequisites
+
+Install [pandoc](https://pandoc.org/installing.html):
+
+Windows:
+```
+winget install pandoc
+```
+
+### Write your post
+
+Create a markdown file in `md/` with YAML frontmatter:
+
+```markdown
+---
+title: My Post Title
+date: 2026-03-07
+---
+
+# My Post Title
+
+Post content here...
+```
+
+### Publish
+
+From PowerShell, Git Bash, or any terminal. I have a tragically confusing workflow right now because I have a linux personal laptop and a Windows 11 desktop that I mix n match for personal projects or game dev. 
+
+```bash
+bash publish.sh md/my-post-filename.md
+```
+
+The script requires bash (ships with Git for Windows). Running `bash publish.sh` from PowerShell should work...
+
+This will:
+1. Parse `title` and `date` from the frontmatter
+2. Convert the markdown to HTML via pandoc
+3. Wrap it in the blog template (with the date displayed at the top)
+4. Place the file in `blog/`
+5. Add the entry to the top of `blog.html`
+6. Update the "Recent Writing" section on `index.html` (keeps the 3 most recent)
+
+### Review and commit
+
+```bash
+# check it in the browser first
+git add blog/my-post-filename.html blog.html index.html
+git commit -m "New post: My Post Title"
+git push
+```
+
+### Backwards compatible
+
+For markdown files without frontmatter, you can still pass the title as a CLI argument:
+
+```bash
+bash publish.sh md/old-file.md "Title As Argument"
+```
+
+This uses today's date automatically.
+
+## Old script (deprecated)
+
+My old `md_to_html.sh` still exists but doesn't update `blog.html` or `index.html`. Use `publish.sh` instead. But, old instructions as follows:
 
 `md_to_html.sh filename title` is the format.
 
-Example:
-`. md_to_html.sh ./md/SQL-Server-GUID-Sort-Order.md "SQL Server GUID Sort Order"`
+Example: `. md_to_html.sh ./md/SQL-Server-GUID-Sort-Order.md "SQL Server GUID Sort Order"`
 
-## Manual Instructions
+## Manual pandoc conversion
 
-Converting from markdown to html is done by:
+If you ever need to convert markdown to HTML directly:
 
-`pandoc test1.md -f markdown -t html -s -o test1.html`
+```
+pandoc test1.md -f markdown -t html -s -o test1.html
+```
 
-- pandoc [name] is the markdown file name
-- -f [type] is from type
-- -t [type] is to type
-- -s is standalone (HTML with a header and footer)
-- -o [name] is output to what file
+- `-f markdown` — from markdown
+- `-t html` — to html
+- `-s` — standalone (includes header/footer)
+- `-o test1.html` — output filename

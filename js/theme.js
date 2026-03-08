@@ -43,6 +43,14 @@
       emailEl.textContent = a;
     }
 
+    // External links open in new tab
+    document.querySelectorAll('a[href^="http"]').forEach(function (link) {
+      if (link.hostname !== window.location.hostname) {
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener");
+      }
+    });
+
     // Staggered fade-in for animated sections
     var sections = document.querySelectorAll(".fade-in");
     sections.forEach(function (el, i) {
