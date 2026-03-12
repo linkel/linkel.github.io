@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <!-- Thanks for checking my source out. Have a great day! -->
+    <meta charset="utf-8" />
+    <title>Why VS Code Extension E2E Tests Broke After a Node.js Upgrade</title>
+    <meta name="description" content="Why VS Code Extension E2E Tests Broke After a Node.js Upgrade" />
+    <meta name="author" content="Kelly Huntlin" />
+    <meta
+      name="keywords"
+      content="Kelly, Kelly Huntlin, R&D, Programming, Software Development, Software Engineering"
+    />
+    <meta property="og:title" content="Why VS Code Extension E2E Tests Broke After a Node.js Upgrade" />
+    <meta property="og:description" content="Why VS Code Extension E2E Tests Broke After a Node.js Upgrade" />
+    <meta property="og:image" content="https://kellyhuntlin.com/images/logo.jpg" />
+    <meta property="og:url" content="https://kellyhuntlin.com" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" type="image/png" href="../images/logo.png" />
+    <script src="../js/theme.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="tab-bar">
+        <div class="logo-tab">
+          <a href="../index.html"><img src="../images/logo.png" alt="Kelly Huntlin" /></a>
+        </div>
+        <nav>
+          <a href="../index.html">Home</a>
+          <a href="../blog.html" class="active">Blog</a>
+          <a href="../talks.html">Talks</a>
+          <a href="../about.html">About</a>
+        </nav>
+        <div class="spacer"></div>
+        <div class="theme-toggle">
+          <button id="theme-toggle" aria-label="Switch to dark mode">dark_mode</button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="gutter" aria-hidden="true">
+          <div class="gutter-line">1</div>
+          <div class="gutter-line">2</div>
+          <div class="gutter-line">3</div>
+          <div class="gutter-line">4</div>
+          <div class="gutter-line">5</div>
+          <div class="gutter-line">6</div>
+          <div class="gutter-line">7</div>
+          <div class="gutter-line">8</div>
+          <div class="gutter-line">9</div>
+          <div class="gutter-line">10</div>
+        </div>
+
+        <div class="content-area">
+          <div class="blog-body fade-in">
+            <p class="blog-date">2026-03-11</p>
+<h1
+id="why-vs-code-extension-e2e-tests-broke-after-a-node.js-upgrade">Why
+VS Code Extension E2E Tests Broke After a Node.js Upgrade</h1>
+<p>If you use <a
+href="https://www.npmjs.com/package/wdio-vscode-service">wdio-vscode-service</a>
+to E2E test your VS Code extension and you’ve recently upgraded to Node
+20 or 22, did you hit this error?</p>
+<pre><code>ERROR @wdio/runner: Error: Failed to create session.  
+session not created: Chrome failed to start: exited normally.
+  (session not created: DevToolsActivePort file doesn&#39;t exist)
+  (The process started from chrome location
+   .../wdio-vscode-service/dist/chromium/index.js is no longer running,
+   so ChromeDriver is assuming that Chrome has crashed.)</code></pre>
+<p>That is a rather inscrutable error. I started debugging. Seemed like
+other people had hit this because there were some StackOverflow posts
+and Github issues on wdio-vscode-extension and webdriverio but no
+solutions. Initially I gave up due to other priorities. I was letting
+the CI/CD system run it for me instead of running locally since it was
+working there. But that’s pretty janky.</p>
+<h2 id="the-fix">The fix</h2>
+<p>In <code>wdio.conf.ts</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> config<span class="op">:</span> Options<span class="op">.</span><span class="at">Testrunner</span> <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ... config ...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">beforeSession</span>() {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">delete</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_OPTIONS</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>This fixed it for me. Why?</p>
+<h2 id="what-the-error-meant">What the error meant</h2>
+<p>The error message is misleading. “Chrome failed to start”. When you
+use <code>wdio-vscode-service</code>, the browser part is a chain of
+processes:</p>
+<pre><code>WDIO Worker
+  → ChromeDriver
+    → fake chrome binary, a Node.js script in wdio-vscode-service
+      → VS Code&#39;s Electron binary</code></pre>
+<p>ChromeDriver tells Electron to open a DevTools debugging port. If
+Electron crashes before creating that port, ChromeDriver gives the
+generic “DevToolsActivePort file doesn’t exist” error.</p>
+<p>Running with debug logging (<code>WDIO_LOG_LEVEL=debug</code>) shows
+what’s happening inside Electron.</p>
+<p>Something like:</p>
+<pre><code>[FAKE VSCode Binary] STDERR: Error: Failed to load native binding
+    at .../binding.js:333:11
+
+Error: Cannot find module &#39;./swc.darwin-universal.node&#39;
+Require stack:
+    - @swc/core/binding.js
+    - ts-node/dist/transpilers/swc.js
+    - ts-node/register/index.js
+    - internal/preload</code></pre>
+<p>Electron was trying to load <code>ts-node/register</code> as a
+preload module, which pulls in <code>@swc/core</code>, whose native
+binary was compiled for system Node (v22) and is incompatible with
+Electron’s embedded Node runtime (a different application binary interface).</p>
+<p>Electron then crashes.</p>
+<h2 id="why-is-ts-node-loading-inside-electron">Why is ts-node loading
+inside Electron?</h2>
+<p>It is because of <code>NODE_OPTIONS</code>.</p>
+<p>When you use <code>autoCompileOpts</code> in your WDIO config (which
+I believe most TypeScript setups do), WDIO’s local runner spawns worker
+processes with TypeScript support. On Node 20+, it does this by adding
+to the <code>NODE_OPTIONS</code> environment variable:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// @wdio/local-runner/build/worker.js (simplified)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nodeVersion</span>(<span class="st">&#39;major&#39;</span>) <span class="op">&gt;=</span> <span class="dv">20</span>) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  runnerEnv<span class="op">.</span><span class="at">NODE_OPTIONS</span> <span class="op">+=</span> <span class="st">&#39; -r ts-node/register&#39;</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>NODE_OPTIONS</code> is inherited by every child process. The
+inheritance chain looks like:</p>
+<pre><code>WDIO Worker  (NODE_OPTIONS=&quot;-r ts-node/register&quot;)  ← set here
+  → ChromeDriver                                    ← inherited from here on out
+    → fake binary (node script)
+      → VS Code Electron</code></pre>
+<p>On Node 16 or 18 (before 18.19), this code path didn’t exist. WDIO
+only added the <code>-r ts-node/register</code> <a
+href="https://github.com/webdriverio/webdriverio/pull/11202/changes">flag</a>
+as a workaround for <a
+href="https://github.com/TypeStrong/ts-node/issues/2053">ts-node#2053</a>,
+which affected Node 18.19+ and 20+. My tests worked fine before the Node
+upgrade, and this was why…</p>
+<h2 id="why-delete-process.env.node_options-is-safe">Why
+<code>delete process.env.NODE_OPTIONS</code> is safe</h2>
+<p>The <code>beforeSession</code> hook runs inside the WDIO worker
+process after ts-node has already been loaded and registered. Deleting
+<code>NODE_OPTIONS</code> at this point doesn’t affect TypeScript
+compilation in the worker because ts-node is already active. But it does
+prevent the env var from propagating to ChromeDriver and to
+Electron.</p>
+<h2 id="how-to-confirm-this-is-your-issue">How to confirm this is your
+issue</h2>
+<p>If you’re not sure whether this is what you’re hitting, here’s some
+diagnostic steps to confirm.</p>
+<ol type="1">
+<li><p><strong>Run with debug logging:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">WDIO_LOG_LEVEL</span><span class="op">=</span>debug <span class="ex">npx</span> wdio run ./wdio.conf.ts <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-A5</span> <span class="st">&quot;FAKE VSCode Binary.*STDERR&quot;</span></span></code></pre></div>
+<p>If you see <code>ts-node</code>, <code>@swc/core</code>, or
+<code>Failed to load native binding</code> in the output.</p></li>
+<li><p><strong>Check your Node version:</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--version</span></span></code></pre></div>
+<p>Is it &gt;= 20 and your tests used to work on an older Node?</p></li>
+<li><p><strong>Check if NODE_OPTIONS is set in the worker:</strong></p>
+<p>Add this temporarily to your wdio config:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">beforeSession</span>() {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;NODE_OPTIONS:&#39;</span><span class="op">,</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_OPTIONS</span>)<span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span></span></code></pre></div>
+<p>If the output includes <code>-r ts-node/register</code> then it’s the
+same problem.</p></li>
+</ol>
+<h2 id="alternatives">Alternatives</h2>
+<p>The <code>beforeSession</code> hook is a pretty simple fix, but there
+are other approaches depending on your setup:</p>
+<ul>
+<li><p><strong>Pre-compile your test files.</strong> Remove
+<code>autoCompileOpts</code> entirely. Compile your TypeScript E2E files
+with <code>tsc</code> or <code>swc</code> before running WDIO, and point
+<code>specs</code> at the compiled <code>.js</code> files. This avoids
+<code>ts-node</code> altogether.</p></li>
+<li><p><strong>Use the previous working Node version.</strong> I think a
+lot of affected people are doing this but then you wallow in
+unupgradable hell.</p></li>
+</ul>
+<h2 id="lesson">Conclusion</h2>
+<p>I guess environment variable inheritance across process
+boundaries causes weird failures.</p>
+<p>The coincidental thing was that the CI/CD system I work with was some
+kind of Linux x64, which did not have this problem that my darwin-arm64
+macOS machine did. For whatever reason ts-node registers successfully
+there.</p>
+<p>So for anyone else who was having these “Chrome failed to start” or
+“DevToolsActivePort” errors in their e2e testing setup, see if it’s your
+<code>NODE_OPTIONS</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

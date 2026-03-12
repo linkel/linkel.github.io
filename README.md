@@ -52,10 +52,10 @@ The script requires bash (ships with Git for Windows). Running `bash publish.sh`
 This will:
 1. Parse `title` and `date` from the frontmatter
 2. Convert the markdown to HTML via pandoc
-3. Wrap it in the blog template (with the date displayed at the top)
+3. Wrap it in the blog template with date at top
 4. Place the file in `blog/`
 5. Add the entry to the top of `blog.html`
-6. Update the "Recent Writing" section on `index.html` (keeps the 3 most recent)
+6. Update the "Recent Writing" section on `index.html`
 
 ### Review and commit
 
@@ -68,7 +68,7 @@ git push
 
 ### Backwards compatible
 
-For markdown files without frontmatter, you can still pass the title as a CLI argument:
+For markdown files without frontmatter, can pass the title as a CLI argument:
 
 ```bash
 bash publish.sh md/old-file.md "Title As Argument"
