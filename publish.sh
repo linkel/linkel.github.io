@@ -87,6 +87,15 @@ rm "conversion/${FILENAME}_content.html"
 mv "conversion/${FILENAME}.html" "blog/${FILENAME}.html"
 echo "Created blog/${FILENAME}.html"
 
+# --- If this post is already listed, this is a regeneration: skip index updates ---
+if grep -q "blog/${FILENAME}.html" blog.html; then
+  echo "Entry already exists in blog.html; skipping blog.html and index.html updates."
+  echo "(If you changed the title or date, update those listings by hand.)"
+  echo ""
+  echo "Done! Review blog/${FILENAME}.html in your browser."
+  exit 0
+fi
+
 # --- Add entry to blog.html (prepend to list) ---
 BLOG_ENTRY_FILE=$(mktemp)
 cat > "$BLOG_ENTRY_FILE" << HEREDOC

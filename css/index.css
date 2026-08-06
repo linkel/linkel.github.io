@@ -742,6 +742,53 @@ li {
   margin: 1.6rem 0;
 }
 
+.blog-body figure {
+  margin: 0;
+}
+
+.blog-body figure img {
+  margin-bottom: 0.5rem;
+}
+
+.blog-body figcaption {
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  color: var(--text-muted);
+  margin-bottom: 1.6rem;
+}
+
+/* Linked blog images with the homepage scan-sweep effect */
+.blog-body .showcase-img-link {
+  max-width: 502px;
+  border-radius: 6px;
+  margin: 1.6rem 0 0.5rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.blog-body .showcase-img-link:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+
+.blog-body .showcase-img-link img {
+  margin: 0;
+}
+
+.showcase-img-link:hover img {
+  transform: scale(1.015);
+}
+
+/* Blog images render at native size, so any zoom past 1:1 blurs them */
+.blog-body .showcase-img-link:hover img {
+  transform: none;
+}
+
+.showcase-img-link:hover .showcase-scan {
+  animation: scanSweep 0.8s ease forwards;
+}
+
 /* --- Talks / other pages --- */
 .page-body {
   padding-bottom: 4rem;
